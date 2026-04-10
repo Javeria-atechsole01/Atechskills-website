@@ -1,0 +1,192 @@
+.team-page {
+  padding-top: 130px;
+  background-color: #f8f9fa;
+  font-family: "Poppins", sans-serif;
+}
+
+.team-header-main {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 60px;
+  padding: 0 20px;
+}
+
+.team-header-main h1 {
+  font-size: 2.5rem;
+  color: #0b1b40;
+  margin-bottom: 10px;
+}
+
+.team-header-main p {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+.profiles-container {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.profile-card {
+  display: flex;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.profile-sidebar {
+  width: 300px;
+  background: #fdfdfd;
+  padding: 40px 30px;
+  text-align: center;
+  border-right: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.profile-img {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 25px;
+  border: 4px solid #fff;
+  box-shadow: 0 8px 20px rgba(106, 0, 255, 0.15);
+}
+
+.profile-intro h2 {
+  font-size: 1.4rem;
+  color: #0b1b40;
+  margin-bottom: 5px;
+}
+
+.profile-intro h3 {
+  font-size: 0.95rem;
+  color: #6a00ff;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.badge {
+  display: inline-block;
+  background: #f0e6ff;
+  color: #6a00ff;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.profile-content {
+  flex: 1;
+  padding: 40px;
+}
+
+.profile-content section {
+  margin-bottom: 30px;
+}
+
+.profile-content h4 {
+  font-size: 1.1rem;
+  color: #0b1b40;
+  margin-bottom: 12px;
+  position: relative;
+  display: inline-block;
+  border-bottom: 2px solid #6a00ff;
+  padding-bottom: 4px;
+}
+
+.profile-content p {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 15px;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  background: #fbfbfb;
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
+}
+
+.skills-grid h4 {
+  border-bottom: none;
+  font-size: 1rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.skills-grid ul {
+  list-style: none;
+  padding: 0;
+}
+
+.skills-grid li {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+.skills-grid li::before {
+  content: "•";
+  color: #6a00ff;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 1.2rem;
+  line-height: 1.2rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .profile-card {
+    flex-direction: column;
+  }
+
+  .profile-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #eee;
+    padding: 30px;
+  }
+
+  .skills-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .team-page {
+    padding-top: 100px;
+  }
+
+  .profile-content {
+    padding: 25px;
+  }
+
+  .profile-img {
+    width: 140px;
+    height: 140px;
+  }
+
+  .team-header-main h1 {
+    font-size: 2rem;
+  }
+}

@@ -1,0 +1,214 @@
+.regis {
+  text-align: center;
+  margin-top: 50px;
+  margin-bottom: 30px;
+}
+
+.regis p {
+  color: #6B0AF3;
+  font-size: 30px;
+  font-weight: 600;
+  padding-top: 10px;
+}
+
+.timer-section {
+  background: linear-gradient(to right, #7317f4, #9051e7);
+  color: white;
+  padding: 80px 20px;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+}
+
+.timer-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+  .timer-container {
+    gap: 15px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+  }
+
+  .colon {
+    display: none;
+    /* Hide colons on mobile grid */
+  }
+
+  .time-box {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    width: 100%;
+    min-width: auto;
+  }
+
+  .time-box span {
+    font-size: 2rem;
+  }
+
+  .time-box h4 {
+    font-size: 1rem;
+  }
+}
+
+.time-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+}
+
+.time-box h4 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  font-weight: 400;
+}
+
+.time-box span {
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+.colon {
+  font-size: 3rem;
+  font-weight: 600;
+}
+
+.support {
+  height: 250px;
+  text-align: center;
+  background-color: white;
+}
+
+.support p {
+  color: #6B0AF3;
+  font-weight: 600;
+  padding-top: 30px;
+}
+
+.support #para {
+  color: black;
+  font-weight: 300;
+  line-height: 1.5;
+
+}
+
+.Courses {
+  height: 250px;
+  background-color: white;
+}
+
+.Courses p {
+  color: #6B0AF3;
+  font-weight: 600;
+  padding-top: 30px;
+  margin-left: 30px;
+}
+
+.Courses h1 {
+  margin-left: 30px;
+}
+
+#crs {
+  text-align: start;
+  color: black;
+  font-weight: 300;
+  line-height: 1.5;
+
+}
+
+.view {
+  background: #e8dff6;
+  align-content: center;
+  color: #6b0af3;
+  border: none;
+  margin-top: 15px;
+  width: 13%;
+  height: 40px;
+  font-size: 15px;
+  padding: 10px 22px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.4s ease;
+}
+
+.view:hover {
+  background: linear-gradient(to right, #7317f4, #9051e7);
+  color: white;
+}
+
+.scroll-fill-text {
+  font-size: 50px;
+  font-weight: 700;
+  text-align: center;
+  color: transparent;
+  background-image: linear-gradient(90deg, #212021);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  transition: background-size 1.8s cubic-bezier(0.5, 1, 0.5, 1);
+  will-change: background-size;
+  animation: gradientMove 10s infinite linear;
+}
+
+.scroll-fill-text1 {
+  font-size: 15px;
+  font-weight: 200;
+  text-align: center;
+
+  line-height: 1.5;
+  /* gradient color that fills */
+  background-image: linear-gradient(90deg, #000000, #000000);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: rgba(0, 0, 0, 0.15);
+  /* light grey text base */
+  transition: background-size 4s ease-out;
+  will-change: background-size;
+}
+
+
+.drop-text {
+  font-size: 80px;
+  font-weight: 900;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(-250px);
+  /* start from above */
+  transition: all 0.2s cubic-bezier(1, 1, 1, 1);
+  color: transparent;
+  background-image: linear-gradient(90deg, #ff00aa, #7a00ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+/* When visible on scroll */
+.drop-text.visible {
+  opacity: 1;
+  transform: translateY(0);
+  /* move to final position */
+  background-size: 100% 100%;
+}
+
+
+/* Optional: Gradient slowly moves (animated color flow) */
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 100%;
+  }
+
+  100% {
+    background-position: 50% 100%;
+  }
+}

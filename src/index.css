@@ -1,0 +1,92 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "lato", sans-serif;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+
+/* Global responsive typography */
+@media (max-width: 1024px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 2rem !important;
+  }
+
+  h2 {
+    font-size: 1.5rem !important;
+  }
+
+  p {
+    font-size: 1rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 13px;
+  }
+
+  h1 {
+    font-size: 1.8rem !important;
+  }
+
+  h2 {
+    font-size: 1.4rem !important;
+  }
+}
+
+
+
+/* container for dot */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  /* let clicks pass through */
+  border-radius: 50%;
+  transform: translate3d(50px, 50px, 0) translate(-50%, -50%);
+  /* initial offscreen-ish */
+  z-index: 9999;
+  transition: width 200ms ease, height 200ms ease, background 300ms ease, box-shadow 300ms ease, opacity 200ms;
+  will-change: transform, width, height, background, box-shadow;
+  /* main look: soft blue with subtle glossy highlight */
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 6%,
+      rgb(135, 71, 238) 30%, rgb(137, 91, 210) 100%);
+  box-shadow: 0 6px 14px rgba(34, 139, 230, 0.18), inset 0 2px 6px rgba(255, 255, 255, 0.25);
+  opacity: 1;
+  transform-origin: center;
+}
+
+/* when hovering interactive items, make it a bit larger */
+.custom-cursor.cursor-hover {
+  width: 28px;
+  height: 28px;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.6) 6%,
+      rgb(135, 71, 238) 30%, rgb(137, 91, 210) 100%);
+  box-shadow: 0 10px 30px rgba(34, 139, 230, 0.22), inset 0 3px 8px rgba(255, 255, 255, 0.3);
+}
+
+/* optional: hide on small screens (touch) */
+@media (hover: none),
+(pointer: coarse) {
+  .custom-cursor {
+    display: none;
+  }
+}

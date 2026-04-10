@@ -1,0 +1,387 @@
+body {
+  background: #f7f5ff;
+  font-family: "Poppins", sans-serif;
+}
+
+.contact-container {
+  position: relative;
+  width: 100%;
+
+  margin-top: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+/* Polygon background */
+.polygon-bg {
+  margin-top: 100px;
+  width: 90%;
+  height: 500px;
+  background: linear-gradient(135deg, #7b00ff, #6200ea);
+  clip-path: polygon(0 0, 70% 10%, 100% 100%, 0 100%);
+  transform: rotateX(30deg);
+  border-radius: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.contact-info {
+  color: white;
+  padding: 40px;
+  max-width: 600px;
+}
+
+.contact-info h1 {
+  margin-top: 50px;
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.contact-info p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.contact-info ul {
+  list-style: none;
+  padding: 0;
+}
+
+.contact-info li {
+  color: white;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+/* Contact form on top of polygon */
+.contact-form {
+  position: absolute;
+  top: 10%;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  z-index: 2;
+  width: 400px;
+  height: 570px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-left: 40%;
+}
+
+.contact-form input,
+.contact-form select,
+.contact-form textarea {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  outline: none;
+  font-size: 0.95rem;
+}
+
+.contact-form button {
+  background: linear-gradient(to right, #7b00ff, #6200ea);
+  color: white;
+  border: none;
+  padding: 10px 0;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  width: 150px;
+}
+
+.contact-form button:hover {
+  background: linear-gradient(to right, #6200ea, #7b00ff);
+}
+
+@media (max-width: 480px) {
+  .contact-info h1 {
+    margin-top: 30px;
+    font-size: 1.8rem;
+  }
+
+  .contact-info p {
+    font-size: 0.95rem;
+  }
+
+  .contact-form {
+    width: 100%;
+    padding: 25px;
+  }
+}
+
+/* ===== Footer Section ===== */
+
+.footer {
+  background-color: #041a2f;
+  color: #fff;
+  padding: 60px 80px 20px;
+  font-family: "Poppins", sans-serif;
+  margin-top: 100px;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+/* ===== Left Section ===== */
+.footer-about {
+  flex: 1;
+  min-width: 280px;
+}
+
+.logo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 15px;
+}
+
+.footer-about p {
+  color: #d0d6e1;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.footer-social {
+  display: flex;
+  gap: 15px;
+}
+
+.footer-social a {
+  color: white;
+  font-size: 1.6rem;
+  transition: 0.3s;
+}
+
+.footer-social a:hover {
+  color: #7b00ff;
+}
+
+/* ===== Middle Section ===== */
+.footer-links {
+  flex: 0.7;
+  min-width: 200px;
+}
+
+.footer-links h3 {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.footer-links h3::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 2px;
+  background: #7b00ff;
+  margin-top: 5px;
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links ul li {
+  margin-bottom: 10px;
+}
+
+.footer-links ul li a {
+  text-decoration: none;
+  color: #d0d6e1;
+  transition: 0.3s;
+}
+
+.footer-links ul li a:hover {
+  color: #7b00ff;
+}
+
+/* ===== Right Section ===== */
+.footer-apps {
+  flex: 0.7;
+  min-width: 220px;
+}
+
+.footer-apps h3 {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.footer-apps h3::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 2px;
+  background: #7b00ff;
+  margin-top: 5px;
+}
+
+.app-buttons img {
+  width: 160px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+/* ===== Bottom Line ===== */
+.footer-bottom {
+  text-align: center;
+  margin-top: 40px;
+  border-top: 1px solid #1b2a3a;
+  padding-top: 15px;
+  color: #b9c5d4;
+  font-size: 0.9rem;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 992px) {
+  .footer {
+    padding: 50px 40px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+
+  .footer-links,
+  .footer-apps {
+    text-align: center;
+  }
+
+  .footer-links h3::after,
+  .footer-apps h3::after {
+    margin: 5px auto;
+  }
+
+  .footer-social {
+    justify-content: center;
+  }
+
+  .app-buttons img {
+    width: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding: 40px 20px 15px;
+  }
+
+  .logo {
+    font-size: 1.7rem;
+  }
+
+  .footer-about p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 485px) {
+  .footer {
+    padding: 40px 20px 15px;
+  }
+
+  .logo {
+    font-size: 1.7rem;
+  }
+
+  .footer-about p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Responsive Fixes for Contact Page */
+@media (max-width: 900px) {
+  .contact-container {
+    padding-bottom: 0;
+    margin-top: 0;
+  }
+
+  .polygon-bg {
+    margin-top: 50px;
+    width: 100%;
+    height: auto;
+    min-height: 400px;
+    /* Allow it to hold content */
+    clip-path: none;
+    background: #7b00ff;
+    border-radius: 0;
+    margin-top: 0;
+    padding-bottom: 350px;
+    /* Space for overlapped form */
+    transform: none;
+    display: flex;
+    justify-content: center;
+  }
+
+  .contact-info {
+    padding: 30px 20px;
+    text-align: center;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .contact-form {
+    position: relative;
+    top: -300px;
+    /* Pull it up specifically */
+    left: auto;
+    margin: 0 auto 50px auto;
+    /* Centered with bottom margin */
+    width: 90%;
+    max-width: 450px;
+    height: auto;
+    transform: none;
+    margin-left: 0;
+    /* Reset specific margin */
+  }
+
+  .contact-info h1 {
+    font-size: 2rem;
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-form {
+    top: -50px;
+    /* On very small screens, less pull-up or flow naturally */
+    margin-top: 0;
+    margin-bottom: 30px;
+  }
+
+  .polygon-bg {
+    margin-top: 30px;
+    padding-bottom: 50px;
+  }
+}
+
+@media (max-width: 900px) {
+  .contact-form {
+    top: -50px;
+    /* On very small screens, less pull-up or flow naturally */
+    margin-top: 0;
+    margin-bottom: 30px;
+  }
+
+  .polygon-bg {
+    margin-top: 80px;
+    padding-bottom: 50px;
+  }
+}

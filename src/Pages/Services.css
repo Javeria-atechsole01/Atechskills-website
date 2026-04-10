@@ -1,0 +1,118 @@
+.services-section {
+  width: 100%;
+  margin: 80px auto 40px;
+  padding: 0 6%;
+}
+
+.services-title {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 28px;
+}
+
+.services-sidebar {
+  background: linear-gradient(90deg, #7020e0);
+  border-radius: 12px;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.15);
+  padding: 18px;
+}
+
+.service-item {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  opacity: 0.9;
+  font-weight: 600;
+  padding: 12px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.service-item.active {
+  background: linear-gradient(90deg, #b74bff, #ff76ff);
+  color: #001;
+}
+
+.service-content {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.12);
+  padding: 26px 22px;
+  position: relative;
+}
+
+.service-tab-badge {
+  position: absolute;
+  top: -16px;
+  left: 28px;
+  background: linear-gradient(90deg, #b74bff, #ff76ff);
+  color: #071028;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  box-shadow: 0 10px 20px rgba(183, 75, 255, 0.3);
+}
+
+.service-content-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f1a3a;
+  margin-top: 12px;
+}
+
+.service-content-desc {
+  margin-top: 8px;
+  color: #374151;
+  line-height: 1.7;
+}
+
+.service-benefits {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 12px;
+}
+
+.service-benefits li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+  color: #1f2937;
+}
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #2020ff;
+}
+
+.read-more {
+  display: inline-block;
+  margin-top: 18px;
+  background: linear-gradient(90deg, #b74bff, #ff76ff);
+  color: #071028;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+@media (max-width: 900px) {
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .service-tab-badge {
+    left: 18px;
+  }
+}

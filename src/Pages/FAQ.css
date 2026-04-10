@@ -1,0 +1,206 @@
+.faq-container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 50px auto;
+  font-family: "Inter", sans-serif;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+#introo {
+  margin-bottom: 30px;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.faq-item {
+  background-color: #ffffff;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border: 1px solid #e3e3e3;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.faq-item.active {
+  border: 1px solid #8b4bff;
+  box-shadow: 0 4px 12px rgba(139, 75, 255, 0.2);
+}
+
+.faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 22px;
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.faq-question h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.arrow-icon {
+  color: #8b4bff;
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.faq-item.active .arrow-icon {
+  transform: rotate(180deg);
+}
+
+.faq-answer {
+  background-color: #f9f9ff;
+  color: #333;
+  overflow: hidden;
+  padding: 0 22px;
+}
+
+.faq-answer p {
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 15px 0;
+
+}
+
+.enroll {
+  background: linear-gradient(to right, #9051e7, #7317f4);
+  color: white;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 17px;
+  cursor: pointer;
+  width: 25%;
+  height: 40px;
+  margin-left: 20px;
+  margin-top: 10px;
+  transition: background 0.4s ease;
+
+}
+
+.enroll:hover {
+  background: linear-gradient(to right, #7317f4, #9051e7);
+}
+
+.course-slider1 {
+  margin: 30px auto;
+  width: 100%;
+}
+
+.course-image1 img {
+  width: 40%;
+  height: 150px;
+  margin-top: 10px;
+  object-fit: cover;
+
+}
+
+.media {
+  background-color: white;
+  text-align: center;
+  height: 200px;
+
+}
+
+.media h1 {
+  padding-top: 5px;
+}
+
+.inTouch {
+  background: linear-gradient(to left, #9051e7, #7317f4);
+  color: white;
+  padding-top: 40px;
+  height: 300px;
+}
+
+.cont {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  padding-top: 3%;
+
+}
+
+.msg {
+  display: flex;
+  color: black;
+  background-color: white;
+  padding: 10px 10px 10px 10px;
+  border-radius: 10px;
+  height: 60px;
+  width: 20%;
+}
+
+.msg svg {
+  width: 40px;
+}
+
+.msg p {
+  padding: 10px 0 0 10px;
+  font-weight: 600;
+  font-size: 14px;
+  /* Fixed font syntax error */
+  margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .faq-container {
+    padding: 0 15px;
+    margin-top: 30px;
+  }
+
+  .faq-question {
+    padding: 15px;
+    font-size: 0.95rem;
+    /* Smaller text */
+    gap: 10px;
+    /* Ensure space between text and arrow */
+  }
+
+  .faq-question h3 {
+    font-size: 15px;
+    line-height: 1.4;
+    text-align: left;
+  }
+
+  .cont {
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 20px;
+    height: auto;
+  }
+
+  .inTouch {
+    height: auto;
+   
+  }
+
+  .msg {
+    width: 90%;
+  }
+
+  .enroll {
+    width: 90%;
+    margin-left: 0;
+    margin-top: 20px;
+  }
+
+  .media {
+    height: auto;
+    height: 280px;
+  }
+
+  .course-image1 img {
+    width: 80%;
+    height: 100px;
+  }
+}

@@ -1,0 +1,406 @@
+/* General Styles */
+.navbar-container {
+  font-family: "Poppins", sans-serif;
+
+}
+
+/* Top Bar */
+.top-bar {
+  background-color: #6a00ff;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 20px;
+  font-size: 13px;
+  height: 55px;
+  width: 100%;
+  z-index: 9999;
+  position: fixed;
+  top: 0;
+
+}
+
+.top-bar .contact-info span {
+  margin-right: 15px;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.top-bar .contact-info span:hover {
+  transform: scale(1.07);
+}
+
+.top-bar .social-icons svg {
+  margin-left: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.top-bar .social-icons svg:hover {
+  transform: scale(1.2);
+  color: #ffde59;
+}
+
+/* Main Navbar */
+.main-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 40px;
+  background-color: #ffff;
+  box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.1);
+  height: 60px;
+  position: fixed;
+  top: 55px;
+  width: 100%;
+  z-index: 9999;
+
+}
+
+.logo img {
+  height: 60px;
+  width: 100px;
+  padding-top: 15px;
+}
+
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  color: #001f3f;
+  font-weight: 500;
+  margin-left: 50px;
+}
+
+.nav-links li {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: color 0.3s;
+  position: relative;
+}
+
+.nav-item-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-toggle-icon {
+  margin-left: 6px;
+  font-size: 13px;
+  /* Requested 12-14px */
+  color: inherit;
+  /* Same as text */
+  opacity: 0.8;
+  /* Slightly lighter/subtle */
+  z-index: 10;
+  transition: transform 0.2s ease;
+  /* Requested 0.2s */
+}
+
+
+
+.nav-links li a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.dropdown-menu {
+  list-style: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  padding: 12px 0;
+  width: 200px;
+  height: auto;
+  border-radius: 6px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.28s ease;
+}
+
+/* Dropdown items */
+.dropdown-menu li {
+  padding: 2px;
+  padding-left: 12px;
+  font-size: small;
+
+}
+
+.dropdown-menu li a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.dropdown-menu li:hover {
+  background: #f5f1ff;
+  color: #5c2cd4;
+}
+
+/* Show dropdown on hover */
+.dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0px);
+}
+
+.nav-links li img {
+  width: 15px;
+  margin-right: 5px;
+}
+
+.nav-links li:hover {
+  color: #6a00ff;
+}
+
+.enroll-btn {
+  background: linear-gradient(90deg, #9a4dff, #6a00ff);
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.enroll-btn:hover {
+  transform: scale(1.05);
+}
+
+.enroll-btn a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+/* Mobile */
+.menu-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  color: #6a00ff;
+}
+
+@media (max-width: 992px) {
+  .top-bar {
+    padding: 8px 16px;
+  }
+
+  .main-navbar {
+    padding: 12px 16px;
+  }
+
+  .nav-links {
+    gap: 16px;
+    margin-left: 20px;
+  }
+}
+
+@media (max-width: 900px) {
+  .top-bar .contact-info span:nth-child(3) {
+    display: none;
+    /* Hide Address on tablets & mobile */
+  }
+
+  .top-bar {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .top-bar {
+    display: none;
+    /* Completely hide top bar on mobile */
+  }
+
+  .main-navbar {
+    top: 0;
+    height: 70px;
+    padding: 10px 20px;
+  }
+
+  .menu-toggle {
+    display: block;
+    cursor: pointer;
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background-color: white;
+    flex-direction: column;
+    align-items: center;
+    /* Align items to center */
+    margin-left: 0;
+    margin-left: 0;
+    overflow: hidden;
+    /* Keep hidden when closed */
+    transition: height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    gap: 0;
+    /* Remove gap, use padding in li */
+  }
+
+  .nav-links.open {
+    height: auto;
+    opacity: 1;
+    padding-bottom: 20px;
+    border-top: 1px solid #eee;
+    overflow: visible;
+  }
+
+  .nav-links li {
+    width: 100%;
+    justify-content: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f0f0;
+    flex-direction: column;
+    /* Stack content vertically (Link top, Submenu bottom) */
+  }
+
+  /* Fix for Bootcamp/Courses stacking */
+  .nav-links li:last-child {
+    border-bottom: none;
+  }
+
+  /* Dropdown on mobile */
+  .dropdown-menu {
+    position: static;
+    box-shadow: none;
+    background: #f9f9f9;
+    width: 100%;
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+    display: none;
+    /* Hidden by default */
+    text-align: center;
+    padding-bottom: 10px;
+    padding-top: 10px;
+  }
+
+  .dropdown-menu.open-mobile {
+    display: block !important;
+    /* Show when open */
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .nav-item-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    position: relative;
+  }
+
+  .dropdown-toggle-icon {
+    margin-left: 5px;
+    /* Tighter spacing */
+    padding: 0;
+    /* Remove extra padding */
+    font-size: 14px;
+    /* Consistent size */
+    color: inherit;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    /* 0.2s transition */
+    display: inline-block;
+  }
+
+  .dropdown-toggle-icon.rotate {
+    transform: rotate(180deg);
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .enroll-btn {
+    display: none;
+    /* Hide top Enroll button on mobile, usually added to menu or bottom */
+  }
+
+  /* Restore Enroll button inside menu if needed, or keep it hidden if there's another CTA */
+  /* Actually, Navbar.jsx has .enroll-btn OUTSIDE .nav-links. 
+     So on mobile it disappears? 
+     Let's add it to .nav-links via JS or just verify if users want it shown.
+     Re-check Navbar.jsx... it's outside. 
+     I will make .enroll-btn visible in the top bar? No, space is tight.
+     I'll append a "Apply Now" li item via CSS? No.
+     Let's just ensure the menu looks good.
+  */
+}
+
+@media (max-width: 600px) {
+  .top-bar .contact-info span:nth-child(2) {
+    display: none;
+  }
+
+  .top-bar .social-icons {
+    display: none;
+  }
+}
+
+/* WhatsApp Float Icon */
+.whatsapp-float {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 40px;
+  right: 40px;
+  background-color: #25d366;
+  color: #FFF;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 30px;
+  box-shadow: 2px 2px 3px #999;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.whatsapp-float:hover {
+  background-color: #128c7e;
+  color: #FFF;
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .whatsapp-float {
+    width: 50px;
+    height: 50px;
+    bottom: 20px;
+    right: 20px;
+    font-size: 25px;
+  }
+}
