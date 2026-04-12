@@ -15,6 +15,31 @@
   justify-content: center;
 }
 
+.sms-login-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.sms-login-subtitle {
+  font-size: 1.1rem;
+  color: #fff;
+  opacity: 0.8;
+  margin-bottom: 2rem;
+}
+
+.sms-login-footer{
+  color: #fff;
+  font-size: 1.0rem;
+  opacity: 0.8;
+  margin-top: 2rem;
+}
+
+.sms-login-footer a{
+  color: rgb(153, 36, 237);
+}
+
 .sms-login-card {
   margin-top: 10%;
   background: var(--sms-card-bg);

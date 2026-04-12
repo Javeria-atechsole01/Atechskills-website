@@ -29,7 +29,7 @@ function Hero() {
           Bridge the tech skills gap with industry-vetted curriculum and expert mentorship.
         </p>
         <div className="hero-buttons">
-          <button className="btn-primary"><Link to="/Enroll"> Apply Now for Next Cohort</Link></button>
+          <button className="btn-primary"><Link to="/sms/signup"> Apply Now for Next Cohort</Link></button>
           <button className="btn-outline"><Link to="/Courses">View Curriculum</Link></button>
         </div>
       </div>

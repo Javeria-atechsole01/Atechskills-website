@@ -110,8 +110,8 @@ const Navbar = () => {
         </ul>
 
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          <button className="enroll-btn" onClick={() => window.location.href = 'https://atechskills.com/lms/login.php'}>Apply Now</button>
-          <button className="login-btn" onClick={() => window.location.href = '/sms/login'}>Signup / Login</button>
+          <button className="enroll-btn" onClick={() => window.location.href = '/sms/signup'}>SignUp</button>
+          <button className="login-btn" onClick={() => window.location.href = '/sms/login'}> Login</button>
         </div>
       </div>
     </div>

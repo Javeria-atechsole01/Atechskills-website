@@ -6,6 +6,11 @@ import authMiddleware from '../../middleware/authMiddleware.js';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const router = express.Router();
 
 // Multer setup for fee proof uploads
@@ -23,7 +28,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // GET all active courses
-router.get('/api/sms/courses/all', async (req, res) => {
+router.get('/courses/all', async (req, res) => {
   try {
     const courses = await Course.find({ isActive: true });
     res.json(courses);
@@ -33,7 +38,7 @@ router.get('/api/sms/courses/all', async (req, res) => {
 });
 
 // GET course detail
-router.get('/api/sms/courses/:id', async (req, res) => {
+router.get('/courses/:id', async (req, res) => {
   try {
     const course = await Course.findById(req.params.id);
     if (!course) return res.status(404).json({ message: 'Course not found' });
@@ -43,25 +48,26 @@ router.get('/api/sms/courses/:id', async (req, res) => {
   }
 });
 
-// POST select course
-router.post('/api/sms/enrollment/select-course', authMiddleware, async (req, res) => {
+// POST select multiple courses
+router.post('/select-courses', authMiddleware, async (req, res) => {
   try {
-    const { courseId } = req.body;
+    const { courseIds } = req.body;
     const student = await Student.findById(req.user.id);
     if (!student) return res.status(404).json({ message: 'Student not found' });
-    if (student.selectedCourse) return res.status(400).json({ message: 'Course already selected' });
-    student.selectedCourse = courseId;
+    
+    student.selectedCourses = courseIds;
     student.enrollmentStatus = 'pending_payment';
     student.enrollmentDate = new Date();
     await student.save();
-    res.json({ message: 'Course selected. Please submit fee.' });
+    
+    res.json({ message: 'Courses selected. Please submit fee.' });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
 // POST submit fee
-router.post('/api/sms/enrollment/submit-fee', authMiddleware, upload.single('paymentProof'), async (req, res) => {
+router.post('/submit-fee', authMiddleware, upload.single('paymentProof'), async (req, res) => {
   try {
     const student = await Student.findById(req.user.id);
     if (!student || !student.selectedCourse) return res.status(400).json({ message: 'No course selected' });
@@ -85,11 +91,11 @@ router.post('/api/sms/enrollment/submit-fee', authMiddleware, upload.single('pay
 });
 
 // GET my enrollment + fee status
-router.get('/api/sms/enrollment/my-status', authMiddleware, async (req, res) => {
+router.get('/my-status', authMiddleware, async (req, res) => {
   try {
-    const student = await Student.findById(req.user.id).populate('selectedCourse');
+    const student = await Student.findById(req.user.id).populate('selectedCourses');
     if (!student) return res.status(404).json({ message: 'Student not found' });
-    const feeRecord = await FeeRecord.findOne({ studentId: student._id, courseId: student.selectedCourse?._id }).sort({ submissionDate: -1 });
+    const feeRecord = await FeeRecord.findOne({ studentId: student._id }).sort({ submissionDate: -1 });
     res.json({ student, feeRecord });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
@@ -97,7 +103,7 @@ router.get('/api/sms/enrollment/my-status', authMiddleware, async (req, res) => 
 });
 
 // Admin Approve Enrollment
-router.put('/api/sms/enrollment/approve/:studentId', authMiddleware, async (req, res) => {
+router.put('/approve/:studentId', authMiddleware, async (req, res) => {
   try {
     if (req.user.role !== 'admin') return res.status(403).json({ message: 'Admins only' });
     const student = await Student.findById(req.params.studentId);

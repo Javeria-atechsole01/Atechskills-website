@@ -5,7 +5,7 @@ import authMiddleware from '../../middleware/authMiddleware.js';
 const router = express.Router();
 
 // Register
-router.post('/api/sms/auth/register', async (req, res) => {
+router.post('/register', async (req, res) => {
   try {
     const { name, email, password, phone, course, batch, role, profilePic } = req.body;
     const existing = await Student.findOne({ email });
@@ -19,7 +19,7 @@ router.post('/api/sms/auth/register', async (req, res) => {
 });
 
 // Login
-router.post('/api/sms/auth/login', async (req, res) => {
+router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     const student = await Student.findOne({ email });
@@ -38,7 +38,7 @@ router.post('/api/sms/auth/login', async (req, res) => {
 });
 
 // Get current user
-router.get('/api/sms/auth/me', authMiddleware, async (req, res) => {
+router.get('/me', authMiddleware, async (req, res) => {
   try {
     const student = await Student.findById(req.user.id).select('-password');
     if (!student) return res.status(404).json({ message: 'User not found' });

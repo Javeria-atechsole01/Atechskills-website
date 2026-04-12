@@ -20,8 +20,10 @@ export const AuthProvider = ({ children }) => {
   }, [user, token]);
 
   const login = async (email, password) => {
+    // Force backend URL if environment variable is not working correctly
+    const apiUrl = "http://localhost:4000"; 
     try {
-      const res = await fetch("/api/sms/auth/login", {
+      const res = await fetch(`${apiUrl}/api/sms/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
@@ -35,7 +37,8 @@ export const AuthProvider = ({ children }) => {
         return { success: false, message: data.message };
       }
     } catch (err) {
-      return { success: false, message: "Network error" };
+      console.error("Login fetch error:", err);
+      return { success: false, message: "Network error: Backend server might be down or connection failed" };
     }
   };
 

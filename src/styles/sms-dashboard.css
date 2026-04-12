@@ -1,25 +1,29 @@
+
 :root {
-  --sms-bg: #0F172A;
-  --sms-sidebar: #1E1B2E;
-  --sms-card: #1E1B2E;
-  --sms-card-border: #2D2A40;
+  --sms-bg: #F8FAFC;
+  --sms-sidebar: #29003e;
+  --sms-card: #FFFFFF;
+  --sms-card-border: #E2E8F0;
   --sms-primary: #6B21A8;
   --sms-primary-accent: #7C3AED;
   --sms-green: #10B981;
-  --sms-text: #F8FAFC;
-  --sms-muted: #94A3B8;
+  --sms-text: #1E293B;
+  --sms-muted: #64748B;
+  --sms-white: #FFFFFF;
 }
 
 .sms-dashboard-bg {
   background: var(--sms-bg);
   min-height: 100vh;
   color: var(--sms-text);
+  padding: 2rem 0; /* Add top and bottom margins via padding */
 }
 
 .sms-sidebar {
+  margin-top: 10%;
   width: 240px;
   background: var(--sms-sidebar);
-  min-height: 100vh;
+  height: calc(100vh - 10%); /* Adjust height to fit within the viewport considering margin-top */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,6 +32,75 @@
   left: 0;
   top: 0;
   z-index: 10;
+  overflow-y: auto; /* Add vertical scrollbar */
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: var(--sms-primary) var(--sms-sidebar); /* For Firefox */
+}
+
+/* Scrollbar styles for Chrome, Safari, and Edge */
+.sms-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sms-sidebar::-webkit-scrollbar-track {
+  background: var(--sms-sidebar);
+}
+
+.sms-sidebar::-webkit-scrollbar-thumb {
+  background: var(--sms-primary);
+  border-radius: 10px;
+}
+
+.sms-sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--sms-primary-accent);
+}
+
+/* Common classes for Purple Cards and Tables */
+.sms-purple-card {
+  background: var(--sms-primary) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 0.8rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.sms-table-purple {
+  width: 100%;
+  background: var(--sms-primary) !important;
+  border-radius: 0.8rem;
+  color: #FFFFFF !important;
+  border-collapse: collapse;
+  overflow: hidden;
+}
+
+.sms-table-purple thead tr {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF !important;
+}
+
+.sms-table-purple th, .sms-table-purple td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sms-input-purple {
+  background: var(--sms-primary) !important;
+  color: #FFFFFF !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 0.7rem;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.sms-input-purple::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.sms-input-purple:focus {
+  outline: none;
+  border-color: #FFFFFF !important;
 }
 
 .sms-sidebar-logo {
@@ -104,29 +177,42 @@
   font-size: 1.2rem;
 }
 
-.sms-sidebar-logout {
-  margin-top: auto;
-  width: 100%;
-  padding: 0.85rem 2rem;
-  color: #fff;
-  background: none;
+.sms-sidebar-logout-btn {
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  width: 90%;
+  margin-left: 5%;
+  padding: 0.85rem 1.5rem;
+  color: #FFFFFF;
+  background: #ff4d4d;
   border: none;
-  text-align: left;
+  border-radius: 0.8rem;
+  text-align: center;
   font-size: 1.05rem;
+  font-weight: 600;
   cursor: pointer;
-  border-left: 4px solid transparent;
-  transition: background 0.18s, color 0.18s, border 0.18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(255, 77, 77, 0.2);
 }
 
-.sms-sidebar-logout:hover {
-  background: var(--sms-primary-accent);
-  color: #fff;
-  border-left: 4px solid var(--sms-primary);
+.sms-sidebar-logout-btn:hover {
+  background: #ff3333;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(255, 77, 77, 0.3);
+}
+
+.sms-sidebar-logout {
+  display: none; /* Hide the old bottom logout button */
 }
 
 .sms-dashboard-main {
+  margin-top:8%;
   margin-left: 240px;
-  padding: 2.5rem 2rem 2rem 2rem;
+  padding: 1rem 2rem 3rem 2rem; /* Adjust padding for better spacing */
+  background: var(--sms-bg);
 }
 
 .sms-dashboard-topbar {
@@ -170,29 +256,35 @@
 }
 
 .sms-dashboard-stat-card {
-  background: var(--sms-card);
+  background: var(--sms-primary);
   border-radius: 1.1rem;
-  border-top: 5px solid var(--sms-primary);
-  border: 1.5px solid var(--sms-card-border);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   flex: 1;
   padding: 1.5rem 1.2rem 1.2rem 1.2rem;
-  color: var(--sms-text);
+  color: #FFFFFF;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   min-width: 180px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sms-dashboard-stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .sms-dashboard-stat-title {
   font-size: 1.05rem;
-  color: var(--sms-muted);
+  color: rgba(255, 255, 255, 0.8);
   margin-bottom: 0.5rem;
 }
 
 .sms-dashboard-stat-value {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: #fff;
+  color: #FFFFFF;
   margin-bottom: 0.2rem;
 }
 

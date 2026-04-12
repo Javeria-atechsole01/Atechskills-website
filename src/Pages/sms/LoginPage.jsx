@@ -20,9 +20,15 @@ const LoginPage = () => {
     // Pass role to login (if backend supports), otherwise check after login
     const result = await login(email, password);
     if (result.success) {
-      // Use selected role for redirect
-      if (role === "admin") navigate("/sms/admin-dashboard");
-      else if (role === "instructor") navigate("/sms/instructor-dashboard");
+      const userRole = result.user.role;
+      // Validate selected role matches backend role
+      if (userRole !== role) {
+        setError(`Access denied: Your account is registered as ${userRole}, not ${role}`);
+        return;
+      }
+      
+      if (userRole === "admin") navigate("/sms/admin-dashboard");
+      else if (userRole === "instructor") navigate("/sms/instructor-dashboard");
       else navigate("/sms/student-dashboard");
     } else {
       setError(result.message || "Invalid credentials");

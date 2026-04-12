@@ -20,11 +20,14 @@ const Sidebar = () => {
         <div className="sms-sidebar-student-course">{courseName}</div>
       </div>
       <nav className="sms-sidebar-nav">
-        <NavLink to="/sms/dashboard" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"} end>
+        <NavLink to="/sms/student-dashboard" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"} end>
           <FaTachometerAlt className="sms-sidebar-link-icon" /> Dashboard
         </NavLink>
-        <NavLink to="/sms/my-course" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"}>
-          <FaBook className="sms-sidebar-link-icon" /> My Course
+        <NavLink to="/sms/select-courses" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"}>
+          <FaBook className="sms-sidebar-link-icon" style={{ color: '#10B981' }} /> <span style={{ color: '#10B981', fontWeight: 700 }}>Add Course</span>
+        </NavLink>
+        <NavLink to="/sms/my-courses" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"}>
+          <FaBook className="sms-sidebar-link-icon" /> My Courses
         </NavLink>
         <NavLink to="/sms/fee-challan" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"}>
           <FaFileInvoice className="sms-sidebar-link-icon" /> Fee Challan
@@ -35,13 +38,15 @@ const Sidebar = () => {
         <NavLink to="/sms/results" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"}>
           <FaChartBar className="sms-sidebar-link-icon" /> My Results
         </NavLink>
+        <div style={{ marginTop: 'auto', paddingBottom: '2rem' }}>
+          <button className="sms-sidebar-logout-btn" onClick={logout}>
+            <FaSignOutAlt className="sms-sidebar-link-icon" /> Logout
+          </button>
+        </div>
         <NavLink to="/sms/profile" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"}>
           <FaUser className="sms-sidebar-link-icon" /> Profile
         </NavLink>
       </nav>
-      <button className="sms-sidebar-logout" onClick={logout}>
-        <FaSignOutAlt className="sms-sidebar-link-icon" /> Logout
-      </button>
     </aside>
   );
 };

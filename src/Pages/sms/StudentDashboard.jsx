@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { FaCheckCircle, FaExclamationCircle, FaClipboardList, FaChartBar, FaBookOpen, FaClock } from "react-icons/fa";
 import "../../styles/sms-dashboard.css";
 
+import CourseSelection from "./CourseSelection";
+
 const StudentDashboard = () => {
   const { user, token } = useContext(AuthContext);
   const [dashboard, setDashboard] = useState(null);
@@ -13,30 +15,54 @@ const StudentDashboard = () => {
 
   useEffect(() => {
     if (!user) return;
+    
+    // If no courses selected, we stay on dashboard but will render CourseSelection
+    if (user.enrollmentStatus === "none") return;
+
     if (user.enrollmentStatus !== "enrolled") {
       navigate("/sms/enrollment-status");
       return;
     }
-    // Fetch dashboard data (replace with real API)
-    fetch("/api/sms/dashboard/overview", {
+    const apiUrl = "http://localhost:4000";
+    // Fetch dashboard data
+    fetch(`${apiUrl}/api/sms/dashboard/overview`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
       .then(setDashboard);
   }, [user, token, navigate]);
 
-  if (!user || user.enrollmentStatus !== "enrolled") return null;
+  if (!user) return null;
 
+  // Render Course Selection UI directly if new student
+  if (user.enrollmentStatus === "none") {
+    return <CourseSelection />;
+  }
+
+  // Render full dashboard for enrolled students
   return (
     <div className="sms-dashboard-bg">
       <Sidebar />
       <main className="sms-dashboard-main">
         <Topbar breadcrumb="Dashboard" batch={dashboard?.batchNo || user?.batch} />
+        
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+          <h2 style={{ color: '#6B21A8', fontWeight: 700 }}>Welcome Back, {user.name.split(' ')[0]}!</h2>
+          <button 
+            onClick={() => navigate("/sms/select-courses")}
+            style={{ background: 'linear-gradient(90deg, #6B21A8, #7C3AED)', color: '#fff', border: 'none', padding: '0.7rem 1.5rem', borderRadius: '0.8rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignIcons: 'center', gap: '0.5rem' }}
+          >
+            + Add New Course
+          </button>
+        </div>
+
         <div className="sms-dashboard-cards">
           <div className="sms-dashboard-stat-card">
-            <div className="sms-dashboard-stat-title">Course Enrolled</div>
-            <div className="sms-dashboard-stat-value">{dashboard?.courseName || "-"}</div>
-            <div className="sms-dashboard-stat-badge sms-dashboard-badge-muted">{dashboard?.track || "-"}</div>
+            <div className="sms-dashboard-stat-title">Courses Enrolled</div>
+            <div className="sms-dashboard-stat-value">{dashboard?.coursesCount || 0}</div>
+            <div className="sms-dashboard-stat-badge sms-dashboard-badge-muted">
+              {dashboard?.courseName ? (dashboard.coursesCount > 1 ? `${dashboard.courseName} & more` : dashboard.courseName) : "-"}
+            </div>
           </div>
           <div className="sms-dashboard-stat-card">
             <div className="sms-dashboard-stat-title">Fee Status</div>

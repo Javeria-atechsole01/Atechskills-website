@@ -11,8 +11,8 @@ function adminOnly(req, res, next) {
   next();
 }
 
-// GET /api/sms/admin/stats
-router.get('/api/sms/admin/stats', authMiddleware, adminOnly, async (req, res) => {
+// GET /stats
+router.get('/stats', authMiddleware, adminOnly, async (req, res) => {
   try {
     const totalEnrolled = await Student.countDocuments({ enrollmentStatus: 'enrolled' });
     const pendingApprovals = await FeeRecord.countDocuments({ status: 'pending' });
@@ -36,8 +36,8 @@ router.get('/api/sms/admin/stats', authMiddleware, adminOnly, async (req, res) =
   }
 });
 
-// GET /api/sms/admin/pending-approvals
-router.get('/api/sms/admin/pending-approvals', authMiddleware, adminOnly, async (req, res) => {
+// GET /pending-approvals
+router.get('/pending-approvals', authMiddleware, adminOnly, async (req, res) => {
   try {
     const pending = await FeeRecord.find({ status: 'pending' })
       .populate('studentId', 'name studentId selectedCourse enrollmentDate')
@@ -49,8 +49,8 @@ router.get('/api/sms/admin/pending-approvals', authMiddleware, adminOnly, async 
   }
 });
 
-// GET /api/sms/admin/enrolled-students
-router.get('/api/sms/admin/enrolled-students', authMiddleware, adminOnly, async (req, res) => {
+// GET /enrolled-students
+router.get('/enrolled-students', authMiddleware, adminOnly, async (req, res) => {
   try {
     const filter = { enrollmentStatus: 'enrolled' };
     if (req.query.course) filter['selectedCourse'] = req.query.course;
@@ -66,8 +66,8 @@ router.get('/api/sms/admin/enrolled-students', authMiddleware, adminOnly, async 
   }
 });
 
-// GET /api/sms/admin/fee-records
-router.get('/api/sms/admin/fee-records', authMiddleware, adminOnly, async (req, res) => {
+// GET /fee-records
+router.get('/fee-records', authMiddleware, adminOnly, async (req, res) => {
   try {
     const records = await FeeRecord.find({})
       .populate('studentId', 'name studentId')
@@ -79,8 +79,8 @@ router.get('/api/sms/admin/fee-records', authMiddleware, adminOnly, async (req, 
   }
 });
 
-// POST /api/sms/fee/create
-router.post('/api/sms/fee/create', authMiddleware, adminOnly, async (req, res) => {
+// POST /fee/create
+router.post('/fee/create', authMiddleware, adminOnly, async (req, res) => {
   try {
     const { studentId, courseId, amount, dueDate, label } = req.body;
     const feeRecord = new FeeRecord({
