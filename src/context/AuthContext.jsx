@@ -2,28 +2,50 @@ import React, { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
+/**
+ * TEMP MOCK AUTH SYSTEM
+ * Used for UI testing without backend API.
+ */
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const stored = localStorage.getItem("sms_user");
+    const stored = localStorage.getItem("user");
     return stored ? JSON.parse(stored) : null;
   });
-  const [token, setToken] = useState(() => localStorage.getItem("sms_token") || "");
+  const [token, setToken] = useState(localStorage.getItem("token") || null);
 
   useEffect(() => {
-    if (user && token) {
-      localStorage.setItem("sms_user", JSON.stringify(user));
-      localStorage.setItem("sms_token", token);
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
     } else {
-      localStorage.removeItem("sms_user");
-      localStorage.removeItem("sms_token");
+      localStorage.removeItem("user");
+    }
+    
+    if (token) {
+      localStorage.setItem("token", token);
+    } else {
+      localStorage.removeItem("token");
     }
   }, [user, token]);
 
   const login = async (email, password) => {
-    // Force backend URL if environment variable is not working correctly
-    const apiUrl = "http://localhost:4000"; 
+    // TEMP MOCK AUTH LOGIC (for testing without backend)
+    if (email === "test@atech.com" && password === "123456") {
+      const mockUser = {
+        name: "Test User",
+        email: "test@atech.com",
+        role: "student",
+        enrollmentStatus: "enrolled",
+        batch: "Batch-001",
+        token: "mock-token-123"
+      };
+      setUser(mockUser);
+      setToken(mockUser.token);
+      return { success: true, user: mockUser };
+    }
+
+    // REAL BACKEND LOGIN
     try {
-      const res = await fetch(`${apiUrl}/api/sms/auth/login`, {
+      const res = await fetch(`/api/sms/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
@@ -44,7 +66,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    setToken("");
+    setToken(null);
   };
 
   return (
@@ -53,3 +75,4 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+

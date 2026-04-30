@@ -9,11 +9,10 @@ const MyCourses = () => {
   const { user, token } = useContext(AuthContext);
   const [courses, setCourses] = useState([]);
   const [activeTab, setActiveTab] = useState("enrolled"); // enrolled, completed
-  const apiUrl = "http://localhost:4000";
 
   useEffect(() => {
     // In real app, this would be an API call to get student's specific courses
-    fetch(`${apiUrl}/api/sms/enrollment/my-status`, {
+    fetch(`/api/sms/enrollment/my-status`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     .then(res => res.json())

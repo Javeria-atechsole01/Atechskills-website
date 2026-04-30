@@ -30,10 +30,8 @@ const SignupPage = () => {
     }
 
     setLoading(true);
-    const apiUrl = "http://localhost:4000";
-
     try {
-      const res = await fetch(`${apiUrl}/api/sms/auth/register`, {
+      const res = await fetch(`/api/sms/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

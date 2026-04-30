@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import { FaTachometerAlt, FaBook, FaFileInvoice, FaTasks, FaChartBar, FaUser, FaSignOutAlt } from "react-icons/fa";
+import { FaTachometerAlt, FaBook, FaFileInvoice, FaTasks, FaChartBar, FaUser, FaSignOutAlt, FaHandshake, FaWallet } from "react-icons/fa";
 import "../../styles/sms-dashboard.css";
 
 const Sidebar = () => {
@@ -45,6 +45,13 @@ const Sidebar = () => {
         </div>
         <NavLink to="/sms/profile" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"}>
           <FaUser className="sms-sidebar-link-icon" /> Profile
+        </NavLink>
+        <div style={{ height: "1px", background: "#333", margin: "10px 0" }}></div>
+        <NavLink to="/sms/affiliate" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"}>
+          <FaHandshake className="sms-sidebar-link-icon" /> Affiliate
+        </NavLink>
+        <NavLink to="/sms/wallet" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"}>
+          <FaWallet className="sms-sidebar-link-icon" /> Wallet
         </NavLink>
       </nav>
     </aside>

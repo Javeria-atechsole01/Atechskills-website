@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./Navbar.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 import logo from '../logo.png'
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaBars, FaTimes, FaAngleDown } from "react-icons/fa";
 
@@ -8,6 +9,14 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [shortDropdownOpen, setShortDropdownOpen] = useState(false);
+  const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/Home');
+  };
+
 
   return (
     <div className="navbar-container">
@@ -110,8 +119,25 @@ const Navbar = () => {
         </ul>
 
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          <button className="enroll-btn" onClick={() => window.location.href = '/sms/signup'}>SignUp</button>
-          <button className="login-btn" onClick={() => window.location.href = '/sms/login'}> Login</button>
+          {user ? (
+            <>
+              <Link 
+                to={user.role === 'admin' ? '/sms/admin-dashboard' : '/sms/student-dashboard'} 
+                className="dashboard-btn"
+                onClick={() => setMenuOpen(false)}
+              >
+                Dashboard
+              </Link>
+              <button className="login-btn" onClick={handleLogout}>Logout</button>
+            </>
+          ) : (
+            <>
+              {/* Dev Shortcut: Always show Dashboard link for development testing */}
+              <Link to="/sms/student-dashboard" className="dashboard-btn dev-only" onClick={() => setMenuOpen(false)}>Dev Dashboard</Link>
+              <Link to="/sms/signup" className="enroll-btn" onClick={() => setMenuOpen(false)}>Signup</Link>
+              <Link to="/sms/login" className="login-btn" onClick={() => setMenuOpen(false)}>Login</Link>
+            </>
+          )}
         </div>
       </div>
     </div>

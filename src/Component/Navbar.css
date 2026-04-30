@@ -181,9 +181,34 @@
   transition: 0.3s;
 }
 
-.enroll-btn:hover, .login-btn:hover {
+.enroll-btn:hover, .login-btn:hover, .dashboard-btn:hover {
   transform: scale(1.05);
 }
+
+.dashboard-btn {
+  background: white;
+  color: #6a00ff;
+  border: 2px solid #6a00ff;
+  padding: 6px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.dashboard-btn:hover {
+  background: #6a00ff;
+  color: white;
+}
+
+.dashboard-btn.dev-only {
+  border-style: dashed;
+  opacity: 0.8;
+}
+
 
 .enroll-btn:hover {
   transform: scale(1.05);

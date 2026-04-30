@@ -1,0 +1,319 @@
+.sms-ref-banner {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(236, 72, 153, 0.1));
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.sms-ref-banner::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 300px;
+  height: 300px;
+  background: var(--sms-primary);
+  filter: blur(100px);
+  opacity: 0.2;
+  z-index: 0;
+}
+
+.sms-ref-info {
+  position: relative;
+  z-index: 1;
+}
+
+.sms-ref-info h3 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(to right, #fff, #94A3B8);
+  -webkit-background-clip: text;
+  -webkit-background-fill-color: transparent;
+}
+
+.sms-copy-field {
+  display: flex;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+  margin-top: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 600px;
+}
+
+.sms-copy-field input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--sms-text);
+  padding: 0.5rem 1rem;
+  font-family: monospace;
+  font-size: 0.9rem;
+}
+
+.sms-copy-field input:focus {
+  outline: none;
+}
+
+.sms-copy-field button {
+  background: var(--sms-primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+.sms-copy-field button:hover {
+  background: var(--sms-primary-accent);
+}
+
+.sms-section-card {
+  background: var(--sms-card);
+  border: 1px solid var(--sms-card-border);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.sms-dashboard-sections {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .sms-dashboard-sections {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sms-text-truncate {
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Wallet Specifics */
+.sms-wallet-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .sms-wallet-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sms-balance-card {
+  position: relative;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sms-balance-card.primary {
+  background: linear-gradient(135deg, #7C3AED, #4F46E5);
+  color: white;
+  grid-row: span 2;
+}
+
+.sms-balance-card.secondary {
+  background: var(--sms-card);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+}
+
+.sms-balance-info span {
+  font-size: 0.875rem;
+  opacity: 0.8;
+}
+
+.sms-balance-info h2 {
+  font-size: 2.5rem;
+  margin: 0.5rem 0;
+}
+
+.sms-wallet-bg-icon {
+  position: absolute;
+  right: -10px;
+  bottom: -10px;
+  font-size: 8rem;
+  opacity: 0.1;
+  transform: rotate(-15deg);
+}
+
+.sms-withdraw-card {
+  background: var(--sms-card);
+  border: 1px solid var(--sms-card-border);
+  border-radius: 1.5rem;
+  padding: 2rem;
+}
+
+.sms-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.sms-form-group label {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--sms-muted);
+  margin-bottom: 0.5rem;
+}
+
+.sms-form-group input, .sms-form-group select {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--sms-card-border);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--sms-text);
+  font-size: 1rem;
+}
+
+.sms-form-group input:focus {
+  outline: none;
+  border-color: var(--sms-primary);
+}
+
+.sms-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.sms-btn-primary {
+  width: 100%;
+  background: var(--sms-primary);
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sms-btn-primary:hover {
+  background: var(--sms-primary-accent);
+  transform: translateY(-2px);
+}
+
+.sms-alert {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.alert-success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--sms-green);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.alert-error {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--sms-red);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.sms-tx-type {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.sms-text-success { color: var(--sms-green); }
+.sms-text-danger { color: var(--sms-red); }
+
+/* Tier Badges */
+.sms-tier-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+.tier-bronze { background: rgba(205, 127, 50, 0.2); color: #CD7F32; border: 1px solid rgba(205, 127, 50, 0.3); }
+.tier-silver { background: rgba(192, 192, 192, 0.2); color: #C0C0C0; border: 1px solid rgba(192, 192, 192, 0.3); }
+.tier-gold { background: rgba(255, 215, 0, 0.2); color: #FFD700; border: 1px solid rgba(255, 215, 0, 0.3); }
+
+/* Tabs */
+.sms-tabs {
+  display: flex;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  gap: 0.25rem;
+}
+
+.sms-tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--sms-muted);
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sms-tab-btn.active {
+  background: var(--sms-primary);
+  color: white;
+}
+
+/* Click Dot */
+.sms-click-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sms-muted);
+  margin-right: 0.5rem;
+}
+.sms-click-dot.active {
+  background: var(--sms-green);
+  box-shadow: 0 0 8px var(--sms-green);
+}
+
+/* Steps */
+.sms-step {
+  text-align: center;
+}
+.sms-step-num {
+  width: 40px;
+  height: 40px;
+  background: var(--sms-primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+.sms-step h4 { margin-bottom: 0.5rem; }
+.sms-step p { font-size: 0.85rem; color: var(--sms-muted); line-height: 1.5; }
+

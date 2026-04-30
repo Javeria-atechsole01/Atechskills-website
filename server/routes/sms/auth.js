@@ -1,7 +1,11 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import { nanoid } from 'nanoid';
 import Student from '../../models/sms/Student.js';
+import Affiliate from '../../models/sms/Affiliate.js';
+import ReferralClick from '../../models/sms/ReferralClick.js';
 import authMiddleware from '../../middleware/authMiddleware.js';
+import { generateReferralCode } from '../../utils/referralUtils.js';
 const router = express.Router();
 
 // Register
@@ -10,10 +14,56 @@ router.post('/register', async (req, res) => {
     const { name, email, password, phone, course, batch, role, profilePic } = req.body;
     const existing = await Student.findOne({ email });
     if (existing) return res.status(400).json({ message: 'Email already registered' });
-    const student = new Student({ name, email, password, phone, course, batch, role, profilePic });
+
+    // Handle Referral
+    let referredBy = null;
+    const refCode = req.cookies.atech_ref;
+    if (refCode) {
+      const referrer = await Student.findOne({ referralCode: refCode });
+      if (referrer) referredBy = referrer._id;
+    }
+
+    // Generate unique referral code for new user
+    const referralCode = await generateReferralCode(name.split(' ')[0]);
+
+    const student = new Student({ 
+      name, email, password, phone, course, batch, role, profilePic,
+      referralCode,
+      referredBy
+    });
+    
     await student.save();
+
+    // Create Affiliate Profile
+    const affiliate = new Affiliate({
+      userId: student._id,
+      referralCode: student.referralCode,
+      referralLink: `http://localhost:5173/sms/signup?ref=${student.referralCode}`
+    });
+    await affiliate.save();
+
+    // Log Conversion in ReferralClick
+    if (refCode) {
+      const click = await ReferralClick.findOne({ referralCode: refCode, ipAddress: req.ip }).sort({ clickedAt: -1 });
+      if (click) {
+        click.convertedToSignup = true;
+        await click.save();
+
+        // Increment conversions for the referrer
+        const referrerAffiliate = await Affiliate.findOne({ referralCode: refCode });
+        if (referrerAffiliate) {
+          referrerAffiliate.totalConversions += 1;
+          await referrerAffiliate.save();
+        }
+      }
+    }
+
+    // Clear referral cookie after successful registration
+    res.clearCookie('atech_ref');
+
     res.status(201).json({ message: 'Registration successful' });
   } catch (err) {
+
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 });

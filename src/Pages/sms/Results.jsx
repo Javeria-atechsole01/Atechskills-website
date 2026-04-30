@@ -7,10 +7,25 @@ import "../../styles/sms-dashboard.css";
 
 const Results = () => {
   const { user, token } = useContext(AuthContext);
-  const [results, setResults] = useState([
-    { id: 1, course: "Short Bootcamp AI", exam: "Mid-Term", marks: "85/100", grade: "A", status: "Passed" },
-    { id: 2, course: "Development Track", exam: "Final Project", marks: "92/100", grade: "A+", status: "Passed" }
-  ]);
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      try {
+        const res = await fetch("/api/sms/results", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        setResults(data);
+      } catch (err) {
+        console.error("Error fetching results:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchResults();
+  }, [token]);
 
   return (
     <div className="sms-dashboard-bg">
@@ -31,7 +46,7 @@ const Results = () => {
           </div>
           
           <div className="sms-results-grid">
-            {results.map(res => (
+            {loading ? <p>Loading results...</p> : results.map(res => (
               <div key={res.id} className="sms-result-card">
                 <div className="sms-result-header">
                   <FaGraduationCap className="course-icon" />
@@ -58,6 +73,7 @@ const Results = () => {
                 </div>
               </div>
             ))}
+            {!loading && results.length === 0 && <p>No results available yet.</p>}
           </div>
 
           <div className="sms-performance-summary sms-purple-card" style={{ padding: '2rem', marginTop: '3rem' }}>

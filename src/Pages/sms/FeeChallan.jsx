@@ -8,11 +8,9 @@ import "../../styles/sms-dashboard.css";
 const FeeChallan = () => {
   const { user, token } = useContext(AuthContext);
   const [challans, setChallans] = useState([]);
-  const apiUrl = "http://localhost:4000";
-
   useEffect(() => {
     // In real app, this would be an API call to get student's fee records
-    fetch(`${apiUrl}/api/sms/enrollment/my-status`, {
+    fetch(`/api/sms/enrollment/my-status`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     .then(res => res.json())

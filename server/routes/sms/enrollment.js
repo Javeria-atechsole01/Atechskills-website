@@ -3,6 +3,7 @@ import Course from '../../models/sms/Course.js';
 import Student from '../../models/sms/Student.js';
 import FeeRecord from '../../models/sms/FeeRecord.js';
 import authMiddleware from '../../middleware/authMiddleware.js';
+import { triggerCommission } from '../../services/sms/affiliateService.js';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -70,8 +71,8 @@ router.post('/select-courses', authMiddleware, async (req, res) => {
 router.post('/submit-fee', authMiddleware, upload.single('paymentProof'), async (req, res) => {
   try {
     const student = await Student.findById(req.user.id);
-    if (!student || !student.selectedCourse) return res.status(400).json({ message: 'No course selected' });
-    const course = await Course.findById(student.selectedCourse);
+    if (!student || !student.selectedCourses || student.selectedCourses.length === 0) return res.status(400).json({ message: 'No course selected' });
+    const course = await Course.findById(student.selectedCourses[0]);
     if (!course) return res.status(404).json({ message: 'Course not found' });
     // Create FeeRecord
     const feeRecord = new FeeRecord({
@@ -113,8 +114,19 @@ router.put('/approve/:studentId', authMiddleware, async (req, res) => {
     student.approvedBy = req.user.id;
     student.approvedAt = new Date();
     await student.save();
+    
+    // Find pending fee record to trigger commission
+    const feeRecord = await FeeRecord.findOne({ studentId: student._id, status: 'pending' });
+    
     // Approve fee record
     await FeeRecord.updateMany({ studentId: student._id, status: 'pending' }, { status: 'approved', approvedBy: req.user.id, approvedAt: new Date() });
+    
+    // Trigger affiliate commission if record exists
+    if (feeRecord) {
+      // We use the found record data. Note: updateMany was used for safety but we process the specific one found.
+      await triggerCommission(feeRecord);
+    }
+
     res.json({ message: 'Student enrollment approved.' });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
@@ -122,7 +134,7 @@ router.put('/approve/:studentId', authMiddleware, async (req, res) => {
 });
 
 // Admin Reject Enrollment
-router.put('/api/sms/enrollment/reject/:studentId', authMiddleware, async (req, res) => {
+router.put('/reject/:studentId', authMiddleware, async (req, res) => {
   try {
     if (req.user.role !== 'admin') return res.status(403).json({ message: 'Admins only' });
     const { reason } = req.body;

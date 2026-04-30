@@ -9,7 +9,7 @@ const Admin = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("http://localhost:4000/api/submissions");
+      const res = await fetch("/api/submissions");
       if (!res.ok) throw new Error("Failed to load");
       const data = await res.json();
       setItems(Array.isArray(data.items) ? data.items : []);

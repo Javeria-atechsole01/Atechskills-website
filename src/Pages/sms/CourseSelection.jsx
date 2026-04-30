@@ -13,13 +13,10 @@ const CourseSelection = () => {
   const [step, setStep] = useState(1); // 1: Select, 2: Payment
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const apiUrl = "http://localhost:4000";
-
   useEffect(() => {
-    // Try fetching from both possible locations
     const fetchCourses = async () => {
       try {
-        const res = await fetch(`${apiUrl}/api/sms/enrollment/courses/all`);
+        const res = await fetch(`/api/sms/enrollment/courses/all`);
         if (!res.ok) throw new Error('Failed to fetch');
         const data = await res.json();
         console.log("Fetched courses:", data);
@@ -76,7 +73,7 @@ const CourseSelection = () => {
     
     setLoading(true);
     try {
-      const res = await fetch(`${apiUrl}/api/sms/enrollment/select-courses`, {
+      const res = await fetch(`/api/sms/enrollment/select-courses`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

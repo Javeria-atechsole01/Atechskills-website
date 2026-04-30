@@ -12,7 +12,7 @@ const EnrollModal = ({ open, onClose, track, source }) => {
     e.preventDefault();
     setStatus("loading");
     try {
-      const res = await fetch("http://localhost:4000/api/submissions", {
+      const res = await fetch("/api/submissions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, track, source }),

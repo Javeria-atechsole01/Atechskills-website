@@ -7,8 +7,13 @@ import smsAuthRouter from './routes/sms/auth.js';
 import smsAdminRouter from './routes/sms/admin.js';
 import smsEnrollmentRouter from './routes/sms/enrollment.js';
 import smsDashboardRouter from './routes/sms/dashboard.js';
+import affiliateRouter from './routes/sms/affiliate.js';
+import smsAssignmentsRouter from './routes/sms/assignments.js';
+import smsResultsRouter from './routes/sms/results.js';
 import process from 'node:process';
 import { MongoMemoryServer } from 'mongodb-memory-server';
+import cookieParser from 'cookie-parser';
+import referralMiddleware from './middleware/referralMiddleware.js';
 
 import Student from './models/sms/Student.js';
 
@@ -20,6 +25,8 @@ const MONGODB_URI = process.env.MONGODB_URI;
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
+app.use(referralMiddleware);
 
 // Request logger
 app.use((req, res, next) => {
@@ -31,6 +38,8 @@ const createTestAccounts = async () => {
   try {
     const StudentModel = mongoose.model('Student');
     const CourseModel = mongoose.model('Course');
+    const AssignmentModel = mongoose.model('Assignment');
+    const ResultModel = mongoose.model('Result');
     
     // Create Courses if they don't exist
     const initialCourses = [
@@ -64,20 +73,45 @@ const createTestAccounts = async () => {
       console.log('Test Admin created: admin@atechskills.com / admin123');
     }
 
-    // Create Test Student... (rest of the code)
     const studentEmail = 'student@atechskills.com';
     const existingStudent = await StudentModel.findOne({ email: studentEmail });
     if (!existingStudent) {
+      const testCourse = await CourseModel.findOne({ name: "AtechSkills DevSecAI Bootcamp - AI Track" });
       const student = new StudentModel({
         name: 'Test Student',
         email: studentEmail,
         password: 'student123',
         role: 'student',
         batch: 'Batch-01',
-        enrollmentStatus: 'none'
+        enrollmentStatus: 'enrolled',
+        selectedCourses: testCourse ? [testCourse._id] : []
       });
       await student.save();
       console.log('Test Student created: student@atechskills.com / student123');
+
+      if (testCourse) {
+        // Create an Assignment
+        const asm = new AssignmentModel({
+          title: "Introduction to AI & Automation",
+          description: "Complete the initial setup and write a brief report.",
+          courseId: testCourse._id,
+          dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        });
+        await asm.save();
+
+        // Create a Result
+        const res = new ResultModel({
+          studentId: student._id,
+          courseId: testCourse._id,
+          examTitle: "Mid-Term Evaluation",
+          marksObtained: 85,
+          totalMarks: 100,
+          grade: "A",
+          status: "Passed"
+        });
+        await res.save();
+        console.log('Seeded test assignment and result');
+      }
     }
   } catch (err) {
     console.error('Error creating test accounts:', err.message);
@@ -89,6 +123,9 @@ app.use('/api/sms/auth', smsAuthRouter);
 app.use('/api/sms/admin', smsAdminRouter);
 app.use('/api/sms/enrollment', smsEnrollmentRouter);
 app.use('/api/sms/dashboard', smsDashboardRouter);
+app.use('/api/sms/affiliate', affiliateRouter);
+app.use('/api/sms/assignments', smsAssignmentsRouter);
+app.use('/api/sms/results', smsResultsRouter);
 
 app.get('/api/health', (req, res) => {
   res.json({ ok: true });

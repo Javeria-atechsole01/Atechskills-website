@@ -19,18 +19,20 @@ const StudentDashboard = () => {
     // If no courses selected, we stay on dashboard but will render CourseSelection
     if (user.enrollmentStatus === "none") return;
 
-    if (user.enrollmentStatus !== "enrolled") {
+    if (user.enrollmentStatus !== "enrolled" && user.enrollmentStatus !== "pending") {
       navigate("/sms/enrollment-status");
       return;
     }
-    const apiUrl = "http://localhost:4000";
+
     // Fetch dashboard data
-    fetch(`${apiUrl}/api/sms/dashboard/overview`, {
+    fetch(`/api/sms/dashboard/overview`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
-      .then(setDashboard);
+      .then(setDashboard)
+      .catch(err => console.error("Error fetching dashboard:", err));
   }, [user, token, navigate]);
+
 
   if (!user) return null;
 

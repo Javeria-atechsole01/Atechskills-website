@@ -2,6 +2,9 @@ import express from 'express';
 import Student from '../../models/sms/Student.js';
 import FeeRecord from '../../models/sms/FeeRecord.js';
 import Course from '../../models/sms/Course.js';
+import Affiliate from '../../models/sms/Affiliate.js';
+import Commission from '../../models/sms/Commission.js';
+import PayoutRequest from '../../models/sms/PayoutRequest.js';
 import authMiddleware from '../../middleware/authMiddleware.js';
 const router = express.Router();
 
@@ -105,6 +108,93 @@ router.put('/api/sms/courses/:id', authMiddleware, adminOnly, async (req, res) =
     res.json(course);
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+// --- Affiliate Management ---
+
+// GET /affiliate/commissions
+router.get('/affiliate/commissions', authMiddleware, adminOnly, async (req, res) => {
+  try {
+    const commissions = await Commission.find({ status: 'pending' })
+      .populate('affiliateId')
+      .populate('referredUserId', 'name email')
+      .sort({ createdAt: -1 });
+    res.json(commissions);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// PATCH /affiliate/commissions/:id/approve
+router.patch('/affiliate/commissions/:id/approve', authMiddleware, adminOnly, async (req, res) => {
+  try {
+    const commission = await Commission.findById(req.params.id);
+    if (!commission) return res.status(404).json({ message: 'Commission not found' });
+    if (commission.status !== 'pending') return res.status(400).json({ message: 'Already processed' });
+
+    commission.status = 'approved';
+    commission.approvalDate = new Date();
+    await commission.save();
+
+    // Stats were updated at triggerCommission (auto-approve), 
+    // but if we had a manual approval flow, we'd update balances here.
+    // In current triggerCommission, we set them to approved immediately.
+    
+    res.json({ message: 'Commission approved' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// GET /affiliate/payouts
+router.get('/affiliate/payouts', authMiddleware, adminOnly, async (req, res) => {
+  try {
+    const payouts = await PayoutRequest.find({ status: 'pending' })
+      .populate({
+        path: 'affiliateId',
+        populate: { path: 'userId', select: 'name email' }
+      })
+      .sort({ requestedAt: -1 });
+    res.json(payouts);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// PATCH /affiliate/payouts/:id/process
+router.patch('/affiliate/payouts/:id/process', authMiddleware, adminOnly, async (req, res) => {
+  try {
+    const payout = await PayoutRequest.findById(req.params.id);
+    if (!payout) return res.status(404).json({ message: 'Payout not found' });
+    
+    payout.status = 'completed';
+    payout.processedAt = new Date();
+    await payout.save();
+
+    // Update withdrawn balance in affiliate profile
+    const affiliate = await Affiliate.findById(payout.affiliateId);
+    if (affiliate) {
+      affiliate.withdrawnBalance += payout.amount;
+      await affiliate.save();
+    }
+
+    res.json({ message: 'Payout marked as completed' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// GET /affiliate/leaderboard
+router.get('/affiliate/leaderboard', authMiddleware, adminOnly, async (req, res) => {
+  try {
+    const top = await Affiliate.find({})
+      .populate('userId', 'name email')
+      .sort({ totalEarned: -1 })
+      .limit(10);
+    res.json(top);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

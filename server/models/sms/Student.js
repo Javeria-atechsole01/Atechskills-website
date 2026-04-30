@@ -12,6 +12,13 @@ const studentSchema = new mongoose.Schema({
   role: { type: String, enum: ['student', 'admin', 'instructor'], default: 'student' },
   profilePic: { type: String },
   status: { type: String, enum: ['active', 'inactive'], default: 'active' },
+  // Referral & Wallet system
+  referralCode: { type: String, unique: true, sparse: true },
+  referredBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
+  isAffiliate: { type: Boolean, default: true },
+  wallet: {
+    balance: { type: Number, default: 0 }
+  },
   // Enrollment system fields
   selectedCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }],
   enrollmentStatus: { type: String, enum: ['none', 'pending_payment', 'enrolled', 'rejected'], default: 'none' },
@@ -21,7 +28,7 @@ const studentSchema = new mongoose.Schema({
 });
 
 // Auto-generate studentId before saving
-studentSchema.pre('save', async function(next) {
+studentSchema.pre('save', async function() {
   if (!this.studentId) {
     try {
       const Student = mongoose.model('Student');
@@ -31,15 +38,13 @@ studentSchema.pre('save', async function(next) {
       console.error('Error generating studentId:', err);
     }
   }
-  if (typeof next === 'function') next();
 });
 
 // Hash password before saving
-studentSchema.pre('save', async function(next) {
+studentSchema.pre('save', async function() {
   if (this.isModified('password')) {
     this.password = await bcrypt.hash(this.password, 10);
   }
-  if (typeof next === 'function') next();
 });
 
 studentSchema.methods.comparePassword = function(candidatePassword) {

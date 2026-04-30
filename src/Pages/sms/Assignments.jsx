@@ -7,11 +7,50 @@ import "../../styles/sms-dashboard.css";
 
 const Assignments = () => {
   const { user, token } = useContext(AuthContext);
-  const [assignments, setAssignments] = useState([
-    { id: 1, title: "Introduction to AI & Automation", course: "Short Bootcamp AI", dueDate: "2024-04-20", status: "pending" },
-    { id: 2, title: "React Components & State", course: "Development Track", dueDate: "2024-04-15", status: "submitted" },
-    { id: 3, title: "Network Security Basics", course: "Cybersecurity Track", dueDate: "2024-04-10", status: "graded", marks: "90/100" }
-  ]);
+  const [assignments, setAssignments] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchAssignments();
+  }, [token]);
+
+  const fetchAssignments = async () => {
+    try {
+      const res = await fetch("/api/sms/assignments", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      setAssignments(data);
+    } catch (err) {
+      console.error("Error fetching assignments:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (id) => {
+    const link = prompt("Please enter the link to your assignment (GitHub, Drive, etc.):");
+    if (!link) return;
+    
+    try {
+      const res = await fetch(`/api/sms/assignments/submit/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ submissionLink: link })
+      });
+      if (res.ok) {
+        alert("Assignment submitted successfully!");
+        fetchAssignments();
+      } else {
+        alert("Failed to submit assignment.");
+      }
+    } catch (err) {
+      console.error("Error submitting assignment:", err);
+    }
+  };
 
   return (
     <div className="sms-dashboard-bg">
@@ -23,10 +62,10 @@ const Assignments = () => {
           <h2 className="sms-page-title">My Assignments</h2>
           
           <div className="sms-assignment-list">
-            {assignments.map(asm => (
-              <div key={asm.id} className="sms-assignment-card">
+            {loading ? <p>Loading assignments...</p> : assignments.map(asm => (
+              <div key={asm._id} className="sms-assignment-card">
                 <div className="sms-asm-info">
-                  <div className="sms-asm-course">{asm.course}</div>
+                  <div className="sms-asm-course">{asm.courseName}</div>
                   <h3 className="sms-asm-title">{asm.title}</h3>
                   <div className="sms-asm-due"><FaClock /> Due: {new Date(asm.dueDate).toLocaleDateString()}</div>
                 </div>
@@ -40,9 +79,9 @@ const Assignments = () => {
 
                 <div className="sms-asm-actions">
                   {asm.status === 'pending' ? (
-                    <button className="sms-btn-upload"><FaCloudUploadAlt /> Submit Now</button>
+                    <button className="sms-btn-upload" onClick={() => handleSubmit(asm._id)}><FaCloudUploadAlt /> Submit Now</button>
                   ) : (
-                    <button className="sms-btn-view">View Submission</button>
+                    <button className="sms-btn-view" onClick={() => alert("Submission Link: " + asm.submissionLink)}>View Submission</button>
                   )}
                 </div>
               </div>

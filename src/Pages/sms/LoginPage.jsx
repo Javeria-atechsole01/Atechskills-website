@@ -14,6 +14,16 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // TEMP MOCK AUTH: Auto-login check
+  React.useEffect(() => {
+    if (localStorage.getItem("user")) {
+      const stored = JSON.parse(localStorage.getItem("user"));
+      if (stored.role === "admin") navigate("/sms/admin-dashboard");
+      else navigate("/sms/student-dashboard");
+    }
+  }, [navigate]);
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
