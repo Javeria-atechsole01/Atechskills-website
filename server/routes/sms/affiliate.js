@@ -37,9 +37,12 @@ router.get('/dashboard', authMiddleware, async (req, res) => {
       .limit(10);
 
     res.json({
-      profile: affiliate,
-      recentCommissions,
-      recentClicks
+      clicks: affiliate.totalClicks || 0,
+      conversions: affiliate.totalConversions || 0,
+      earnings: affiliate.totalEarned || 0,
+      referralCode: affiliate.referralCode,
+      tier: affiliate.tier,
+      commissions: recentCommissions
     });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });

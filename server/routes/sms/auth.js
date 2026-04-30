@@ -12,16 +12,19 @@ const router = express.Router();
 // Register
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password, phone, course, batch, role, profilePic } = req.body;
+    const { name, email, password, phone, course, batch, role, profilePic, referralCode: incomingRefCode } = req.body;
     const existing = await Student.findOne({ email });
     if (existing) return res.status(400).json({ message: 'Email already registered' });
 
     // Handle Referral
     let referredBy = null;
-    const refCode = req.cookies.atech_ref;
-    if (refCode) {
-      const referrer = await Student.findOne({ referralCode: refCode });
-      if (referrer) referredBy = referrer._id;
+    if (incomingRefCode) {
+      const referrer = await Student.findOne({ referralCode: incomingRefCode });
+      // Prevent self-referral (though technically impossible if they are just signing up, 
+      // but good for general logic)
+      if (referrer && referrer.email !== email) {
+        referredBy = referrer._id;
+      }
     }
 
     // Generate unique referral code for new user
@@ -53,24 +56,15 @@ router.post('/register', async (req, res) => {
       await instructor.save();
     }
 
-    // Log Conversion in ReferralClick
-    if (refCode) {
-      const click = await ReferralClick.findOne({ referralCode: refCode, ipAddress: req.ip }).sort({ clickedAt: -1 });
-      if (click) {
-        click.convertedToSignup = true;
-        await click.save();
-
-        // Increment conversions for the referrer
-        const referrerAffiliate = await Affiliate.findOne({ referralCode: refCode });
-        if (referrerAffiliate) {
-          referrerAffiliate.totalConversions += 1;
-          await referrerAffiliate.save();
-        }
-      }
+    // Create Instructor Profile if applicable
+    if (role === 'instructor') {
+      const instructor = new Instructor({
+        userId: student._id,
+        expertise: [],
+        verified: false
+      });
+      await instructor.save();
     }
-
-    // Clear referral cookie after successful registration
-    res.clearCookie('atech_ref');
 
     res.status(201).json({ message: 'Registration successful' });
   } catch (err) {

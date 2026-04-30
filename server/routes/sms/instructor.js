@@ -27,7 +27,7 @@ router.get('/dashboard', authMiddleware, instructorOnly, async (req, res) => {
     
     const totalStudents = await Enrollment.countDocuments({ courseId: { $in: courseIds } });
     
-    const earnings = await WalletTransaction.aggregate([
+    const earningsData = await WalletTransaction.aggregate([
       { $match: { userId: req.user.id, source: 'instructor' } },
       { $group: { 
           _id: null, 
@@ -37,11 +37,22 @@ router.get('/dashboard', authMiddleware, instructorOnly, async (req, res) => {
       }
     ]);
 
+    const earningsByDate = await WalletTransaction.aggregate([
+      { $match: { userId: req.user.id, source: 'instructor' } },
+      { $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          amount: { $sum: "$amount" }
+      }},
+      { $sort: { _id: 1 } },
+      { $project: { date: "$_id", amount: 1, _id: 0 } }
+    ]);
+
     res.json({
-      totalEarnings: earnings[0]?.total || 0,
-      pendingEarnings: earnings[0]?.pending || 0,
+      totalEarnings: earningsData[0]?.total || 0,
+      pendingEarnings: earningsData[0]?.pending || 0,
       totalCourses: courses.length,
-      totalStudents
+      totalStudents,
+      earningsByDate
     });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });

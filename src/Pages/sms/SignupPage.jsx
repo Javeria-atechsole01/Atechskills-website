@@ -16,6 +16,15 @@ const SignupPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Capture referral code on mount
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get("ref");
+    if (ref) {
+      localStorage.setItem("referralCode", ref);
+    }
+  }, []);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -40,12 +49,14 @@ const SignupPage = () => {
           email: formData.email,
           phone: formData.phone,
           password: formData.password,
-          role: formData.role
+          role: formData.role,
+          referralCode: localStorage.getItem("referralCode") // Send captured referral
         })
       });
 
       const data = await res.json();
       if (res.ok) {
+        localStorage.removeItem("referralCode"); // Success! Clear the code
         navigate("/sms/login");
       } else {
         setError(data.message || "Signup failed");
@@ -145,11 +156,11 @@ const SignupPage = () => {
               className="sms-login-input"
               value={formData.role}
               onChange={handleChange}
-              style={{ width: '100%', appearance: 'auto' }}
+              style={{ appearance: 'auto' }}
             >
-              <option value="student" style={{ color: '#000' }}>Student</option>
-              <option value="instructor" style={{ color: '#000' }}>Instructor</option>
-              <option value="admin" style={{ color: '#000' }}>Admin</option>
+              <option value="student">Student</option>
+              <option value="instructor">Instructor</option>
+              <option value="admin">Admin</option>
             </select>
           </div>
 

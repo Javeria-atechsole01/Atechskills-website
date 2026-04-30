@@ -157,14 +157,21 @@
 }
 
 .sms-form input, .sms-form select {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--sms-card-border);
   border-radius: 0.75rem;
   padding: 0.85rem 1rem;
-  color: #ffffff !important;
-  font-size: 1rem;
+  color: #ffffff;
+  width: 100%;
   outline: none;
-  transition: border-color 0.2s;
+  backdrop-filter: var(--sms-blur);
+  transition: all 0.2s;
+}
+
+.sms-form select option {
+  background-color: var(--sms-sidebar);
+  color: #ffffff;
+  padding: 10px;
 }
 
 .sms-form input:focus, .sms-form select:focus {
@@ -610,3 +617,68 @@
 @media (max-width: 1024px) {
   .sms-mobile-toggle { display: flex; }
 }
+
+/* Admin Specific UI */
+.sms-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.sms-table-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.sms-search-input, .sms-role-select {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--sms-card-border);
+  border-radius: 0.75rem;
+  padding: 0.6rem 1rem;
+  color: white;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.sms-search-input { min-width: 250px; }
+
+.sms-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--sms-card-border);
+}
+
+.sms-page-btn {
+  background: var(--sms-card);
+  border: 1px solid var(--sms-card-border);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sms-page-btn:hover:not(:disabled) {
+  background: var(--sms-primary);
+  border-color: var(--sms-primary);
+}
+
+.sms-page-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.sms-user-info { display: flex; flex-direction: column; gap: 0.2rem; }
+.sms-user-name { font-weight: 600; color: var(--sms-text); }
+.sms-user-email { font-size: 0.8rem; color: var(--sms-muted); }
+
+.sms-section-full { grid-column: 1 / -1; }
+

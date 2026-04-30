@@ -10,6 +10,7 @@ import smsDashboardRouter from './routes/sms/dashboard.js';
 import affiliateRouter from './routes/sms/affiliate.js';
 import smsAssignmentsRouter from './routes/sms/assignments.js';
 import smsResultsRouter from './routes/sms/results.js';
+import smsWalletRouter from './routes/sms/wallet.js';
 import process from 'node:process';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import cookieParser from 'cookie-parser';
@@ -129,6 +130,7 @@ app.use('/api/sms/affiliate', affiliateRouter);
 app.use('/api/sms/instructor', instructorRouter);
 app.use('/api/sms/assignments', smsAssignmentsRouter);
 app.use('/api/sms/results', smsResultsRouter);
+app.use('/api/sms/wallet', smsWalletRouter);
 
 app.get('/api/health', (req, res) => {
   res.json({ ok: true });

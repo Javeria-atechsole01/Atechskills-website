@@ -19,7 +19,7 @@ const WalletPage = () => {
 
   const fetchWallet = async () => {
     try {
-      const res = await fetch("/api/sms/affiliate/wallet", {
+      const res = await fetch("/api/sms/wallet", {
         headers: { Authorization: `Bearer ${token || localStorage.getItem("token")}` }
       });
       setData(await res.json());
@@ -32,7 +32,7 @@ const WalletPage = () => {
     
     setSubmitting(true);
     try {
-      const res = await fetch("/api/sms/affiliate/payout/request", {
+      const res = await fetch("/api/sms/wallet/payout/request", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ amount: form.amount, method: form.method, accountDetails: form })
@@ -41,6 +41,9 @@ const WalletPage = () => {
         setMsg({ type: "success", text: "Request submitted!" });
         setForm({ amount: "", method: "easypaisa", accountName: "", accountNumber: "", bankName: "" });
         fetchWallet();
+      } else {
+        const errData = await res.json();
+        setMsg({ type: "error", text: errData.message || "Request failed" });
       }
     } finally { setSubmitting(false); }
   };
@@ -54,9 +57,9 @@ const WalletPage = () => {
         <Topbar title="My Financials" />
 
         <div className="sms-stats-grid">
-          <StatCard icon={<FaMoneyBillWave />} title="Available Balance" value={`Rs. ${data?.approvedBalance?.toLocaleString() || 0}`} color="var(--sms-green)" />
-          <StatCard icon={<FaHistory />} title="Pending Balance" value={`Rs. ${data?.pendingBalance?.toLocaleString() || 0}`} color="var(--sms-yellow)" />
-          <StatCard icon={<FaArrowDown />} title="Total Withdrawn" value={`Rs. ${data?.withdrawnBalance?.toLocaleString() || 0}`} color="var(--sms-muted)" />
+          <StatCard icon={<FaMoneyBillWave />} title="Available Balance" value={`Rs. ${data?.balance?.approved?.toLocaleString() || 0}`} color="var(--sms-green)" />
+          <StatCard icon={<FaHistory />} title="Pending Balance" value={`Rs. ${data?.balance?.pending?.toLocaleString() || 0}`} color="var(--sms-yellow)" />
+          <StatCard icon={<FaArrowDown />} title="Total Paid" value={`Rs. ${data?.balance?.paid?.toLocaleString() || 0}`} color="var(--sms-muted)" />
         </div>
 
         <div className="sms-dashboard-sections">

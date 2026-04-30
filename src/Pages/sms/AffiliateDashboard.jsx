@@ -37,7 +37,7 @@ const AffiliateDashboard = () => {
   };
 
   const copyLink = () => {
-    const link = `${window.location.origin}/sms/signup?ref=${data?.profile?.referralCode}`;
+    const link = `${window.location.origin}/sms/signup?ref=${data?.referralCode}`;
     navigator.clipboard.writeText(link);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -45,8 +45,7 @@ const AffiliateDashboard = () => {
 
   if (loading) return <LoadingState message="Fetching affiliate stats..." />;
 
-  const profile = data?.profile;
-  const filteredCommissions = data?.recentCommissions?.filter(c => 
+  const filteredCommissions = data?.commissions?.filter(c => 
     filter === "all" ? true : c.status === filter
   );
 
@@ -56,8 +55,8 @@ const AffiliateDashboard = () => {
       <div className="sms-main-content">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
           <h2 className="sms-page-title">Affiliate Portal</h2>
-          <div className={`sms-tier-badge tier-${profile?.tier || 'bronze'}`}>
-            <FaMedal /> {profile?.tier?.toUpperCase()} TIER
+          <div className={`sms-tier-badge tier-${data?.tier || 'bronze'}`}>
+            <FaMedal /> {data?.tier?.toUpperCase()} TIER
           </div>
         </div>
 
@@ -65,20 +64,35 @@ const AffiliateDashboard = () => {
           <div className="sms-ref-info">
             <h3>Boost Your Earnings 🚀</h3>
             <p>Invite friends and earn 10% on every enrollment.</p>
-            <div className="sms-copy-field">
-              <input readOnly value={`${window.location.origin}/sms/signup?ref=${profile?.referralCode}`} />
-              <button onClick={copyLink}>
-                {copied ? <FaCheckCircle /> : <FaCopy />} {copied ? "Copied" : "Copy Link"}
-              </button>
-            </div>
+            {data?.referralCode ? (
+              <div className="sms-copy-field-container">
+                <div className="sms-copy-field">
+                  <input readOnly value={`${window.location.origin}/sms/signup?ref=${data?.referralCode}`} />
+                  <button onClick={copyLink} className="sms-btn-copy">
+                    {copied ? <FaCheckCircle /> : <FaCopy />} {copied ? "Copied" : "Copy"}
+                  </button>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
+                  <a 
+                    href={`https://wa.me/?text=Check%20out%20AtechSkills%20for%20amazing%20IT%20bootcamps!%20Join%20using%20my%20link:%20${window.location.origin}/sms/signup?ref=${data?.referralCode}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="sms-btn-whatsapp"
+                  >
+                    <FaWhatsapp /> Share on WhatsApp
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <div className="sms-ref-skeleton">Generating your unique link...</div>
+            )}
           </div>
         </div>
 
         <div className="sms-stats-grid">
-          <StatCard icon={<FaMousePointer />} title="Total Clicks" value={profile?.totalClicks || 0} />
-          <StatCard icon={<FaUsers />} title="Conversions" value={profile?.totalConversions || 0} />
-          <StatCard icon={<FaClock />} title="Pending PKR" value={`Rs. ${profile?.pendingBalance?.toLocaleString() || 0}`} color="var(--sms-yellow)" />
-          <StatCard icon={<FaWallet />} title="Approved PKR" value={`Rs. ${profile?.approvedBalance?.toLocaleString() || 0}`} color="var(--sms-green)" />
+          <StatCard icon={<FaMousePointer />} title="Total Clicks" value={data?.clicks || 0} />
+          <StatCard icon={<FaUsers />} title="Conversions" value={data?.conversions || 0} />
+          <StatCard icon={<FaWallet />} title="Total Earned" value={`Rs. ${data?.earnings?.toLocaleString() || 0}`} color="var(--sms-green)" />
         </div>
 
         <div className="sms-dashboard-sections">

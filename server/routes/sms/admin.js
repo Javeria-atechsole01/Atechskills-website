@@ -14,56 +14,63 @@ function adminOnly(req, res, next) {
   next();
 }
 
-// GET /stats
-router.get('/stats', authMiddleware, adminOnly, async (req, res) => {
+// GET /dashboard
+router.get('/dashboard', authMiddleware, adminOnly, async (req, res) => {
   try {
-    const totalEnrolled = await Student.countDocuments({ enrollmentStatus: 'enrolled' });
-    const pendingApprovals = await FeeRecord.countDocuments({ status: 'pending' });
-    const now = new Date();
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    const feeCollected = await FeeRecord.aggregate([
-      { $match: { status: 'approved', submissionDate: { $gte: monthStart } } },
+    const totalUsers = await Student.countDocuments({});
+    const totalStudents = await Student.countDocuments({ role: 'student' });
+    const totalInstructors = await Student.countDocuments({ role: 'instructor' });
+    
+    const revenueData = await FeeRecord.aggregate([
+      { $match: { status: 'approved' } },
       { $group: { _id: null, total: { $sum: '$amount' } } }
     ]);
-    const activeCourses = await Course.countDocuments({ isActive: true });
-    const activeBatches = await Course.distinct('batchNo', { isActive: true });
+
+    const recentUsers = await Student.find({})
+      .select('name email role createdAt')
+      .sort({ createdAt: -1 })
+      .limit(5);
+
     res.json({
-      totalEnrolled,
-      pendingApprovals,
-      feeCollected: feeCollected[0]?.total || 0,
-      activeCourses,
-      activeBatches: activeBatches.length
+      totalUsers,
+      totalStudents,
+      totalInstructors,
+      totalRevenue: revenueData[0]?.total || 0,
+      recentUsers
     });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
-// GET /pending-approvals
-router.get('/pending-approvals', authMiddleware, adminOnly, async (req, res) => {
+// GET /users (Paginated + Search)
+router.get('/users', authMiddleware, adminOnly, async (req, res) => {
   try {
-    const pending = await FeeRecord.find({ status: 'pending' })
-      .populate('studentId', 'name studentId selectedCourse enrollmentDate')
-      .populate('courseId', 'name')
-      .sort({ submissionDate: -1 });
-    res.json(pending);
-  } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
-  }
-});
+    const { role, page = 1, limit = 10, search = '' } = req.query;
+    const query = {};
+    
+    if (role) query.role = role;
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } }
+      ];
+    }
 
-// GET /enrolled-students
-router.get('/enrolled-students', authMiddleware, adminOnly, async (req, res) => {
-  try {
-    const filter = { enrollmentStatus: 'enrolled' };
-    if (req.query.course) filter['selectedCourse'] = req.query.course;
-    if (req.query.batch) filter['batch'] = req.query.batch;
-    if (req.query.track) filter['track'] = req.query.track;
-    if (req.query.status) filter['status'] = req.query.status;
-    const students = await Student.find(filter)
-      .populate('selectedCourse', 'name track bootcampType')
-      .sort({ enrollmentDate: -1 });
-    res.json(students);
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const total = await Student.countDocuments(query);
+    const users = await Student.find(query)
+      .select('name email role createdAt')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    res.json({
+      data: users,
+      page: parseInt(page),
+      totalPages: Math.ceil(total / limit),
+      total
+    });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }

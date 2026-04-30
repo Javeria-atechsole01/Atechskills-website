@@ -21,9 +21,9 @@ export const StatCard = ({ icon, title, value, subValue, color = "var(--sms-prim
 );
 
 // 3. Badge
-export const Badge = ({ status, children }) => (
-  <span className={`sms-badge badge-${status?.toLowerCase()}`}>
-    {children || status}
+export const Badge = ({ status, text, children }) => (
+  <span className={`sms-badge sms-badge-${status?.toLowerCase()}`}>
+    {text || children || status}
   </span>
 );
 
@@ -43,7 +43,7 @@ export const EmptyState = ({ message = "No data available" }) => (
 );
 
 // 6. Table Component
-export const DataTable = ({ headers, rows, renderRow }) => (
+export const DataTable = ({ headers, rows, renderRow, loading }) => (
   <div className="sms-table-wrapper">
     <table className="sms-table">
       <thead>
@@ -52,7 +52,13 @@ export const DataTable = ({ headers, rows, renderRow }) => (
         </tr>
       </thead>
       <tbody>
-        {rows && rows.length > 0 ? (
+        {loading ? (
+          <tr>
+            <td colSpan={headers.length}>
+              <LoadingState message="Fetching data..." />
+            </td>
+          </tr>
+        ) : rows && rows.length > 0 ? (
           rows.map((row, i) => renderRow(row, i))
         ) : (
           <tr>
