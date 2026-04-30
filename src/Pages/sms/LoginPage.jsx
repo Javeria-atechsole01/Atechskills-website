@@ -19,6 +19,7 @@ const LoginPage = () => {
     if (localStorage.getItem("user")) {
       const stored = JSON.parse(localStorage.getItem("user"));
       if (stored.role === "admin") navigate("/sms/admin-dashboard");
+      else if (stored.role === "instructor") navigate("/sms/instructor/dashboard");
       else navigate("/sms/student-dashboard");
     }
   }, [navigate]);
@@ -38,7 +39,7 @@ const LoginPage = () => {
       }
       
       if (userRole === "admin") navigate("/sms/admin-dashboard");
-      else if (userRole === "instructor") navigate("/sms/instructor-dashboard");
+      else if (userRole === "instructor") navigate("/sms/instructor/dashboard");
       else navigate("/sms/student-dashboard");
     } else {
       setError(result.message || "Invalid credentials");

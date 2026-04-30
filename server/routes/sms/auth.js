@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { nanoid } from 'nanoid';
 import Student from '../../models/sms/Student.js';
 import Affiliate from '../../models/sms/Affiliate.js';
+import Instructor from '../../models/sms/Instructor.js';
 import ReferralClick from '../../models/sms/ReferralClick.js';
 import authMiddleware from '../../middleware/authMiddleware.js';
 import { generateReferralCode } from '../../utils/referralUtils.js';
@@ -41,6 +42,16 @@ router.post('/register', async (req, res) => {
       referralLink: `http://localhost:5173/sms/signup?ref=${student.referralCode}`
     });
     await affiliate.save();
+
+    // Create Instructor Profile if applicable
+    if (role === 'instructor') {
+      const instructor = new Instructor({
+        userId: student._id,
+        expertise: [],
+        verified: false
+      });
+      await instructor.save();
+    }
 
     // Log Conversion in ReferralClick
     if (refCode) {

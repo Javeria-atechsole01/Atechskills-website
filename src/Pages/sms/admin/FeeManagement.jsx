@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import AdminSidebar from "../../../components/sms/AdminSidebar";
 import Topbar from "../../../components/sms/Topbar";
 import { AuthContext } from "../../../context/AuthContext";
+import { DataTable, Badge, LoadingState, GlassCard } from "../../../components/sms/UI/DashboardUI";
+import { FaFileInvoice, FaDownload, FaCheck, FaTrash, FaPlus } from "react-icons/fa";
 import "../../../styles/sms-dashboard.css";
 
 const FeeManagement = () => {
@@ -9,100 +11,123 @@ const FeeManagement = () => {
   const [students, setStudents] = useState([]);
   const [courses, setCourses] = useState([]);
   const [feeRecords, setFeeRecords] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({ studentId: '', courseId: '', amount: '', dueDate: '', label: '' });
 
   useEffect(() => {
-    fetch("/api/sms/admin/enrolled-students", { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => res.json()).then(setStudents);
-    fetch("/api/sms/courses/all", { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => res.json()).then(setCourses);
-    fetch("/api/sms/admin/fee-records", { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => res.json()).then(setFeeRecords);
+    const fetchData = async () => {
+      try {
+        const [studentsRes, coursesRes, feesRes] = await Promise.all([
+          fetch("/api/sms/admin/enrolled-students", { headers: { Authorization: `Bearer ${token}` } }),
+          fetch("/api/sms/enrollment/courses/all", { headers: { Authorization: `Bearer ${token}` } }),
+          fetch("/api/sms/admin/fee-records", { headers: { Authorization: `Bearer ${token}` } })
+        ]);
+
+        const studentsData = await studentsRes.json();
+        const coursesData = await coursesRes.json();
+        const feesData = await feesRes.json();
+
+        setStudents(Array.isArray(studentsData) ? studentsData : []);
+        setCourses(Array.isArray(coursesData) ? coursesData : []);
+        setFeeRecords(Array.isArray(feesData) ? feesData : []);
+      } catch (err) {
+        console.error("Error fetching fee management data:", err);
+        setStudents([]);
+        setCourses([]);
+        setFeeRecords([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, [token]);
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+  
   const handleCourseChange = e => {
     const courseId = e.target.value;
     const course = courses.find(c => c._id === courseId);
     setForm({ ...form, courseId, amount: course?.fee || '' });
   };
 
-  // Add submit handler for challan creation
+  if (loading) return <LoadingState />;
 
   return (
-    <div className="sms-dashboard-bg">
+    <div className="sms-dashboard-layout">
       <AdminSidebar />
-      <main className="sms-dashboard-main">
-        <Topbar breadcrumb="Fee Management" />
-        <div className="sms-purple-card" style={{ marginBottom: '2rem', padding: '2rem', maxWidth: 600 }}>
-          <h3 style={{ color: '#FFFFFF', marginBottom: '1rem' }}>Create Fee Challan</h3>
-          <form style={{ display: 'flex', flexWrap: 'wrap', gap: '1.2rem' }}>
-            <select name="studentId" value={form.studentId} onChange={handleChange} className="sms-input-purple">
-              <option value="">Select Student</option>
-              {students.map(s => <option key={s._id} value={s._id}>{s.name} ({s.studentId})</option>)}
-            </select>
-            <select name="courseId" value={form.courseId} onChange={handleCourseChange} className="sms-input-purple">
-              <option value="">Select Course</option>
-              {courses.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
-            </select>
-            <input name="amount" value={form.amount} onChange={handleChange} placeholder="Amount" className="sms-input-purple" />
-            <input name="dueDate" type="date" value={form.dueDate} onChange={handleChange} className="sms-input-purple" />
-            <input name="label" value={form.label} onChange={handleChange} placeholder="Semester/Month" className="sms-input-purple" />
-            <button type="button" style={{ background: '#FFFFFF', color: '#6B21A8', border: 'none', borderRadius: '0.7rem', padding: '0.7rem 1.5rem', fontWeight: 600, cursor: 'pointer', marginTop: 8 }}>Generate Challan</button>
+      <main className="sms-main-content">
+        <Topbar title="Financial Management" />
+        
+        <GlassCard style={{ marginBottom: '2.5rem' }}>
+          <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <FaPlus color="var(--sms-primary)" /> Generate New Challan
+          </h3>
+          <form className="sms-form" style={{ maxWidth: '900px' }}>
+            <div className="sms-form-row">
+              <div className="sms-form-group">
+                <label>Select Student</label>
+                <select name="studentId" value={form.studentId} onChange={handleChange}>
+                  <option value="">Choose Student</option>
+                  {students.map(s => <option key={s._id} value={s._id}>{s.name} ({s.studentId})</option>)}
+                </select>
+              </div>
+              <div className="sms-form-group">
+                <label>Select Course</label>
+                <select name="courseId" value={form.courseId} onChange={handleCourseChange}>
+                  <option value="">Choose Course</option>
+                  {courses.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
+                </select>
+              </div>
+            </div>
+            
+            <div className="sms-form-row">
+              <div className="sms-form-group">
+                <label>Amount (PKR)</label>
+                <input name="amount" value={form.amount} onChange={handleChange} placeholder="Fee Amount" />
+              </div>
+              <div className="sms-form-group">
+                <label>Due Date</label>
+                <input name="dueDate" type="date" value={form.dueDate} onChange={handleChange} />
+              </div>
+              <div className="sms-form-group">
+                <label>Reference Label</label>
+                <input name="label" value={form.label} onChange={handleChange} placeholder="e.g. Admission Fee" />
+              </div>
+            </div>
+
+            <button type="button" className="sms-btn-primary" style={{ width: 'auto', alignSelf: 'flex-start' }}>
+              <FaFileInvoice /> Create & Notify
+            </button>
           </form>
-        </div>
-        <h3 style={{ color: '#6B21A8', marginBottom: '1rem' }}>All Fee Records</h3>
-        <table className="sms-table-purple">
-          <thead>
-            <tr>
-              <th style={{ padding: '0.7rem' }}>Challan No</th>
-              <th>Student</th>
-              <th>Course</th>
-              <th>Amount</th>
-              <th>Due Date</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {feeRecords.map((f, i) => (
+        </GlassCard>
+
+        <GlassCard>
+          <h3 style={{ marginBottom: '1.5rem' }}>Challan History</h3>
+          <DataTable 
+            headers={["Challan #", "Student", "Course", "Amount", "Due Date", "Status", "Actions"]}
+            rows={feeRecords}
+            renderRow={(f, i) => (
               <tr key={i}>
-                <td style={{ padding: '0.7rem' }}>{f.challanNo}</td>
+                <td style={{ fontWeight: 700 }}>#{f.challanNo}</td>
                 <td>{f.studentId?.name}</td>
                 <td>{f.courseId?.name}</td>
-                <td>PKR {f.amount}</td>
+                <td style={{ fontWeight: 700 }}>Rs. {f.amount?.toLocaleString()}</td>
                 <td>{f.dueDate ? new Date(f.dueDate).toLocaleDateString() : '-'}</td>
-                <td>{renderStatus(f.status)}</td>
+                <td><Badge status={f.status} /></td>
                 <td>
-                  <button style={{ background: '#FFFFFF', color: '#6B21A8', border: 'none', borderRadius: '0.7rem', padding: '0.5rem 1.2rem', fontWeight: 600, cursor: 'pointer', marginRight: 8 }}>Download PDF</button>
-                  <button style={{ background: '#10B981', color: '#fff', border: 'none', borderRadius: '0.7rem', padding: '0.5rem 1.2rem', fontWeight: 600, cursor: 'pointer', marginRight: 8 }}>Mark as Paid</button>
-                  <button style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: '0.7rem', padding: '0.5rem 1.2rem', fontWeight: 600, cursor: 'pointer' }}>Delete</button>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button className="sms-icon-btn"><FaDownload /></button>
+                    <button className="sms-icon-btn success"><FaCheck /></button>
+                    <button className="sms-icon-btn danger"><FaTrash /></button>
+                  </div>
                 </td>
               </tr>
-            ))}
-            {feeRecords.length === 0 && <tr><td colSpan={7} style={{ color: 'rgba(255,255,255,0.7)', textAlign: 'center' }}>No records found.</td></tr>}
-          </tbody>
-        </table>
+            )}
+          />
+        </GlassCard>
       </main>
     </div>
   );
 };
-
-const inputStyle = {
-  background: '#0F172A',
-  color: '#F8FAFC',
-  border: '1.5px solid #2D2A40',
-  borderRadius: '0.7rem',
-  padding: '0.7rem 1rem',
-  fontSize: '1rem',
-};
-
-function renderStatus(status) {
-  if (status === 'approved') return <span style={{ background: '#10B981', color: '#fff', borderRadius: '0.5rem', padding: '0.2rem 0.7rem', fontWeight: 600 }}>Approved</span>;
-  if (status === 'pending') return <span style={{ background: '#fbbf24', color: '#222', borderRadius: '0.5rem', padding: '0.2rem 0.7rem', fontWeight: 600 }}>Pending</span>;
-  if (status === 'rejected') return <span style={{ background: '#ef4444', color: '#fff', borderRadius: '0.5rem', padding: '0.2rem 0.7rem', fontWeight: 600 }}>Rejected</span>;
-  if (status === 'overdue') return <span style={{ background: '#ef4444', color: '#fff', borderRadius: '0.5rem', padding: '0.2rem 0.7rem', fontWeight: 600 }}>Overdue</span>;
-  return status;
-}
 
 export default FeeManagement;

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import AdminSidebar from "../../components/sms/AdminSidebar";
 import Topbar from "../../components/sms/Topbar";
 import { AuthContext } from "../../context/AuthContext";
+import { StatCard, GlassCard, LoadingState } from "../../components/sms/UI/DashboardUI";
 import "../../styles/sms-dashboard.css";
 
 const AdminDashboard = () => {
@@ -9,109 +10,110 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
   const [pending, setPending] = useState([]);
   const [recent, setRecent] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!token || user?.role !== 'admin') return;
 
-    const apiUrl = import.meta.env.VITE_API_URL || "";
-    fetch(`${apiUrl}/api/sms/admin/stats`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => res.json())
-      .then(data => setStats(data))
-      .catch(err => console.error("Error fetching stats:", err));
+    const fetchAll = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || "";
+        const [statsRes, pendingRes, recentRes] = await Promise.all([
+          fetch(`${apiUrl}/api/sms/admin/stats`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`${apiUrl}/api/sms/admin/pending-approvals`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`${apiUrl}/api/sms/admin/enrolled-students?limit=5`, { headers: { Authorization: `Bearer ${token}` } })
+        ]);
 
-    fetch(`${apiUrl}/api/sms/admin/pending-approvals`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => res.json())
-      .then(data => setPending(data))
-      .catch(err => console.error("Error fetching pending approvals:", err));
+        setStats(await statsRes.json());
+        setPending(await pendingRes.json());
+        setRecent(await recentRes.json());
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    fetch(`${apiUrl}/api/sms/admin/enrolled-students?limit=5`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => res.json())
-      .then(data => setRecent(Array.isArray(data) ? data.slice(0, 5) : []))
-      .catch(err => console.error("Error fetching recent students:", err));
+    fetchAll();
   }, [token, user]);
 
+  if (loading) return <LoadingState message="Calculating metrics..." />;
+
   return (
-    <div className="sms-dashboard-bg">
+    <div className="sms-dashboard-layout">
       <AdminSidebar />
-      <main className="sms-dashboard-main">
-        <Topbar breadcrumb="Admin Overview" />
-        <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
+      <main className="sms-main-content">
+        <Topbar title="Admin Command Center" />
+        
+        <div className="sms-stats-grid">
           <StatCard title="Total Enrolled" value={stats?.totalEnrolled || 0} />
-          <StatCard title="Pending Approvals" value={stats?.pendingApprovals || 0} badgeColor={stats?.pendingApprovals > 0 ? '#ef4444' : '#10B981'} />
-          <StatCard title="Fee Collected" value={`PKR ${stats?.feeCollected || 0}`} />
-          <StatCard title="Active Courses" value={stats?.activeCourses || 0} />
+          <StatCard title="Pending Approvals" value={stats?.pendingApprovals || 0} color={stats?.pendingApprovals > 0 ? 'var(--sms-red)' : 'var(--sms-green)'} />
+          <StatCard title="Revenue Collected" value={`Rs. ${stats?.feeCollected?.toLocaleString() || 0}`} color="var(--sms-green)" />
+          <StatCard title="Active Courses" value={stats?.activeCourses || 0} color="var(--sms-primary-accent)" />
         </div>
         
-        <div style={{ display: 'flex', gap: '2.5rem', flexWrap: 'wrap' }}>
-          <div style={{ flex: '1 1 400px', minWidth: '300px' }}>
-            <h3 style={{ color: '#6B21A8', marginBottom: '1.5rem', fontWeight: 700, fontSize: '1.4rem' }}>Pending Approvals</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem' }}>
+          <GlassCard>
+            <h3 style={{ marginBottom: '1.5rem' }}>Pending Requests</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {pending.length > 0 ? pending.map((item, i) => (
-                <div key={i} style={listItemStyle}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                    <span style={{ fontWeight: 600, fontSize: '1.1rem', color: '#FFFFFF' }}>{item.studentId?.name || "Unknown Student"}</span>
-                    <span style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>{item.courseId?.name || "No Course"}</span>
+                <div key={i} className="sms-list-item">
+                  <div>
+                    <div style={{ fontWeight: 600 }}>{item.studentId?.name || "Unknown"}</div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--sms-muted)' }}>{item.courseId?.name}</div>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
-                    <span style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>{new Date(item.submissionDate).toLocaleDateString()}</span>
-                    <button style={btnStyle}>Review</button>
-                  </div>
+                  <button className="sms-btn-small">Review</button>
                 </div>
-              )) : <p style={{ color: '#64748B', fontStyle: 'italic' }}>No pending approvals found.</p>}
+              )) : <p className="sms-empty">No pending tasks.</p>}
             </div>
-          </div>
+          </GlassCard>
 
-          <div style={{ flex: '1 1 400px', minWidth: '300px' }}>
-            <h3 style={{ color: '#6B21A8', marginBottom: '1.5rem', fontWeight: 700, fontSize: '1.4rem' }}>Recent Enrollments</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+          <GlassCard>
+            <h3 style={{ marginBottom: '1.5rem' }}>Recent Enrollments</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {recent.length > 0 ? recent.map((item, i) => (
-                <div key={i} style={listItemStyle}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                    <span style={{ fontWeight: 600, fontSize: '1.1rem', color: '#FFFFFF' }}>{item.name}</span>
-                    <span style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>{item.selectedCourse?.name || "No Course"}</span>
+                <div key={i} className="sms-list-item">
+                  <div>
+                    <div style={{ fontWeight: 600 }}>{item.name}</div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--sms-muted)' }}>{item.selectedCourse?.name}</div>
                   </div>
-                  <span style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>{new Date(item.enrollmentDate).toLocaleDateString()}</span>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--sms-muted)' }}>{new Date(item.enrollmentDate).toLocaleDateString()}</span>
                 </div>
-              )) : <p style={{ color: '#64748B', fontStyle: 'italic' }}>No recent enrollments found.</p>}
+              )) : <p className="sms-empty">No recent data.</p>}
             </div>
-          </div>
+          </GlassCard>
         </div>
       </main>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        .sms-list-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1rem;
+          background: rgba(255,255,255,0.03);
+          border-radius: 0.75rem;
+          border: 1px solid var(--sms-card-border);
+        }
+        .sms-btn-small {
+          background: var(--sms-primary);
+          color: white;
+          border: none;
+          padding: 0.4rem 0.8rem;
+          border-radius: 0.5rem;
+          font-size: 0.8rem;
+          font-weight: 600;
+          cursor: pointer;
+        }
+        .sms-empty {
+          color: var(--sms-muted);
+          font-style: italic;
+          text-align: center;
+          padding: 2rem 0;
+        }
+      `}} />
     </div>
   );
-};
-
-const StatCard = ({ title, value, badgeColor }) => (
-  <div className="sms-dashboard-stat-card" style={{ flex: '1 1 200px' }}>
-    <div className="sms-dashboard-stat-title">{title}</div>
-    <div className="sms-dashboard-stat-value">{value}</div>
-    {badgeColor && <span className="sms-dashboard-stat-badge" style={{ background: badgeColor, color: '#fff' }}>{value}</span>}
-  </div>
-);
-
-const listItemStyle = {
-  background: '#6B21A8',
-  border: '1px solid rgba(255, 255, 255, 0.1)',
-  borderRadius: '1rem',
-  padding: '1.2rem 1.5rem',
-  color: '#FFFFFF',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-  transition: 'all 0.2s ease'
-};
-
-const btnStyle = {
-  background: '#6B21A8',
-  color: '#fff',
-  border: 'none',
-  borderRadius: '0.6rem',
-  padding: '0.4rem 1rem',
-  fontSize: '0.85rem',
-  fontWeight: 600,
-  cursor: 'pointer',
-  transition: 'all 0.2s ease'
 };
 
 export default AdminDashboard;

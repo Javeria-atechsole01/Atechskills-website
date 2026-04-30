@@ -12,8 +12,10 @@ const courseSchema = new mongoose.Schema({
   batchNo: { type: String },
   maxSeats: { type: Number },
   enrolledCount: { type: Number, default: 0 },
+  instructorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Instructor' },
+  status: { type: String, enum: ['draft', 'published'], default: 'draft' },
   isActive: { type: Boolean, default: true }
-});
+}, { timestamps: true });
 
 const Course = mongoose.model('Course', courseSchema);
 export default Course;

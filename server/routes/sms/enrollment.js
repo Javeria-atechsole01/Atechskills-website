@@ -3,7 +3,7 @@ import Course from '../../models/sms/Course.js';
 import Student from '../../models/sms/Student.js';
 import FeeRecord from '../../models/sms/FeeRecord.js';
 import authMiddleware from '../../middleware/authMiddleware.js';
-import { triggerCommission } from '../../services/sms/affiliateService.js';
+import { processRevenueDistribution } from '../../services/sms/revenueService.js';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -121,10 +121,9 @@ router.put('/approve/:studentId', authMiddleware, async (req, res) => {
     // Approve fee record
     await FeeRecord.updateMany({ studentId: student._id, status: 'pending' }, { status: 'approved', approvedBy: req.user.id, approvedAt: new Date() });
     
-    // Trigger affiliate commission if record exists
+    // Trigger revenue distribution if record exists
     if (feeRecord) {
-      // We use the found record data. Note: updateMany was used for safety but we process the specific one found.
-      await triggerCommission(feeRecord);
+      await processRevenueDistribution(feeRecord);
     }
 
     res.json({ message: 'Student enrollment approved.' });

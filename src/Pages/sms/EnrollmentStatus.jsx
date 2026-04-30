@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import Sidebar from "../../components/sms/Sidebar";
 import Topbar from "../../components/sms/Topbar";
+import { GlassCard } from "../../components/sms/UI/DashboardUI";
 import "../../styles/sms-dashboard.css";
 
 const EnrollmentStatus = () => {
@@ -33,22 +34,23 @@ const EnrollmentStatus = () => {
   const status = getStatusMessage();
 
   return (
-    <div className="sms-dashboard-bg">
+    <div className="sms-dashboard-layout">
       <Sidebar />
-      <main className="sms-dashboard-main">
-        <Topbar breadcrumb="Enrollment Status" />
-        <div style={{ background: '#1E1B2E', border: '1.5px solid #2D2A40', borderRadius: '1.1rem', padding: '3rem', textAlign: 'center', marginTop: '2rem' }}>
-          <h2 style={{ color: status.color, marginBottom: '1.5rem' }}>{status.title}</h2>
-          <p style={{ color: '#F8FAFC', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>{status.message}</p>
-          <div style={{ marginTop: '2rem' }}>
+      <main className="sms-main-content">
+        <Topbar title="Enrollment Status" />
+        <GlassCard style={{ textAlign: 'center', marginTop: '2rem', padding: '4rem' }}>
+          <h2 style={{ color: status.color, marginBottom: '1.5rem', fontSize: '2rem' }}>{status.title}</h2>
+          <p style={{ color: 'var(--sms-text)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto', opacity: 0.8 }}>{status.message}</p>
+          <div style={{ marginTop: '2.5rem' }}>
             <button 
               onClick={() => window.location.href = 'https://wa.me/923253344552'}
-              style={{ background: '#6B21A8', color: '#fff', border: 'none', borderRadius: '0.8rem', padding: '0.8rem 2rem', fontWeight: 600, cursor: 'pointer' }}
+              className="sms-btn-primary"
+              style={{ padding: '0.9rem 2.5rem', borderRadius: '1rem' }}
             >
               Contact Support
             </button>
           </div>
-        </div>
+        </GlassCard>
       </main>
     </div>
   );

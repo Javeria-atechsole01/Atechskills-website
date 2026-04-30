@@ -4,7 +4,8 @@ const walletTransactionSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: true },
   amount: { type: Number, required: true },
   type: { type: String, enum: ['credit', 'debit'], required: true },
-  source: { type: String, enum: ['referral', 'withdrawal'], required: true },
+  source: { type: String, enum: ['referral', 'instructor', 'withdrawal'], required: true },
+  referenceId: { type: mongoose.Schema.Types.ObjectId }, // e.g. Enrollment ID or FeeRecord ID
   status: { type: String, enum: ['pending', 'completed'], default: 'completed' },
   description: { type: String }
 }, { timestamps: true });

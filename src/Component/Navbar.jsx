@@ -122,7 +122,11 @@ const Navbar = () => {
           {user ? (
             <>
               <Link 
-                to={user.role === 'admin' ? '/sms/admin-dashboard' : '/sms/student-dashboard'} 
+                to={
+                  user.role === 'admin' ? '/sms/admin-dashboard' : 
+                  user.role === 'instructor' ? '/sms/instructor/dashboard' : 
+                  '/sms/student-dashboard'
+                } 
                 className="dashboard-btn"
                 onClick={() => setMenuOpen(false)}
               >
@@ -132,8 +136,6 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              {/* Dev Shortcut: Always show Dashboard link for development testing */}
-              <Link to="/sms/student-dashboard" className="dashboard-btn dev-only" onClick={() => setMenuOpen(false)}>Dev Dashboard</Link>
               <Link to="/sms/signup" className="enroll-btn" onClick={() => setMenuOpen(false)}>Signup</Link>
               <Link to="/sms/login" className="login-btn" onClick={() => setMenuOpen(false)}>Login</Link>
             </>

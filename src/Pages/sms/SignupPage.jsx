@@ -9,7 +9,8 @@ const SignupPage = () => {
     email: "",
     phone: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
+    role: "student"
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -39,7 +40,7 @@ const SignupPage = () => {
           email: formData.email,
           phone: formData.phone,
           password: formData.password,
-          role: "student"
+          role: formData.role
         })
       });
 
@@ -136,6 +137,20 @@ const SignupPage = () => {
               value={formData.confirmPassword}
               onChange={handleChange}
             />
+          </div>
+
+          <div className="sms-login-input-group">
+            <select
+              name="role"
+              className="sms-login-input"
+              value={formData.role}
+              onChange={handleChange}
+              style={{ width: '100%', appearance: 'auto' }}
+            >
+              <option value="student" style={{ color: '#000' }}>Student</option>
+              <option value="instructor" style={{ color: '#000' }}>Instructor</option>
+              <option value="admin" style={{ color: '#000' }}>Admin</option>
+            </select>
           </div>
 
           <button type="submit" className="sms-login-btn" disabled={loading}>

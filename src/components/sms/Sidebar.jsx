@@ -1,60 +1,89 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import { FaTachometerAlt, FaBook, FaFileInvoice, FaTasks, FaChartBar, FaUser, FaSignOutAlt, FaHandshake, FaWallet } from "react-icons/fa";
+import { 
+  FaTachometerAlt, FaBook, FaFileInvoice, FaTasks, FaChartBar, 
+  FaUser, FaSignOutAlt, FaHandshake, FaWallet, FaBars, FaTimes 
+} from "react-icons/fa";
 import "../../styles/sms-dashboard.css";
 
 const Sidebar = () => {
   const { user, logout } = useContext(AuthContext);
+  const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const initials = user?.name?.split(" ").map(n => n[0]).join("") || "S";
-  const courseName = user?.selectedCourse?.name || "-";
+
+  const initials = user?.name?.split(" ").map(n => n[0]).join("") || "U";
+
+  const closeSidebar = () => setIsOpen(false);
 
   return (
-    <aside className="sms-sidebar">
-      <div className="sms-sidebar-logo">ATech Skills</div>
-      <div className="sms-sidebar-portal">Student Portal</div>
-      <div className="sms-sidebar-avatar">{initials}</div>
-      <div className="sms-sidebar-student">
-        <div className="sms-sidebar-student-name">{user?.name}</div>
-        <div className="sms-sidebar-student-course">{courseName}</div>
-      </div>
-      <nav className="sms-sidebar-nav">
-        <NavLink to="/sms/student-dashboard" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"} end>
-          <FaTachometerAlt className="sms-sidebar-link-icon" /> Dashboard
-        </NavLink>
-        <NavLink to="/sms/select-courses" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"}>
-          <FaBook className="sms-sidebar-link-icon" style={{ color: '#10B981' }} /> <span style={{ color: '#10B981', fontWeight: 700 }}>Add Course</span>
-        </NavLink>
-        <NavLink to="/sms/my-courses" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"}>
-          <FaBook className="sms-sidebar-link-icon" /> My Courses
-        </NavLink>
-        <NavLink to="/sms/fee-challan" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"}>
-          <FaFileInvoice className="sms-sidebar-link-icon" /> Fee Challan
-        </NavLink>
-        <NavLink to="/sms/assignments" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"}>
-          <FaTasks className="sms-sidebar-link-icon" /> Assignments
-        </NavLink>
-        <NavLink to="/sms/results" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"}>
-          <FaChartBar className="sms-sidebar-link-icon" /> My Results
-        </NavLink>
-        <div style={{ marginTop: 'auto', paddingBottom: '2rem' }}>
-          <button className="sms-sidebar-logout-btn" onClick={logout}>
-            <FaSignOutAlt className="sms-sidebar-link-icon" /> Logout
-          </button>
+    <>
+      <button className="sms-mobile-toggle" onClick={() => setIsOpen(!isOpen)}>
+        {isOpen ? <FaTimes /> : <FaBars />}
+      </button>
+
+      <aside className={`sms-sidebar ${isOpen ? "open" : ""}`}>
+        <div className="sms-sidebar-logo">ATech Skills</div>
+        <div className="sms-sidebar-portal">
+          {user?.role === "admin" ? "Admin Portal" : 
+           user?.role === "instructor" ? "Instructor Portal" : "Student Portal"}
         </div>
-        <NavLink to="/sms/profile" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"}>
-          <FaUser className="sms-sidebar-link-icon" /> Profile
-        </NavLink>
-        <div style={{ height: "1px", background: "#333", margin: "10px 0" }}></div>
-        <NavLink to="/sms/affiliate" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"}>
-          <FaHandshake className="sms-sidebar-link-icon" /> Affiliate
-        </NavLink>
-        <NavLink to="/sms/wallet" className={({ isActive }) => isActive ? "sms-sidebar-link active" : "sms-sidebar-link"}>
-          <FaWallet className="sms-sidebar-link-icon" /> Wallet
-        </NavLink>
-      </nav>
-    </aside>
+        
+        <div className="sms-sidebar-avatar">{initials}</div>
+        <div className="sms-sidebar-student">
+          <div className="sms-sidebar-student-name">{user?.name}</div>
+          <div className="sms-sidebar-student-course">{user?.role?.toUpperCase()}</div>
+        </div>
+
+        <nav className="sms-sidebar-nav">
+          {/* Universal Links */}
+          {user?.role === "student" && (
+            <>
+              <NavLink to="/sms/student-dashboard" className="sms-sidebar-link" onClick={closeSidebar} end>
+                <FaTachometerAlt className="sms-sidebar-link-icon" /> Dashboard
+              </NavLink>
+              <NavLink to="/sms/my-courses" className="sms-sidebar-link" onClick={closeSidebar}>
+                <FaBook className="sms-sidebar-link-icon" /> My Courses
+              </NavLink>
+            </>
+          )}
+
+          {/* Instructor Specific Links */}
+          {user?.role === "instructor" && (
+            <>
+              <NavLink to="/sms/instructor/dashboard" className="sms-sidebar-link" onClick={closeSidebar}>
+                <FaTachometerAlt className="sms-sidebar-link-icon" /> Ins. Dashboard
+              </NavLink>
+              <NavLink to="/sms/instructor/courses" className="sms-sidebar-link" onClick={closeSidebar}>
+                <FaBook className="sms-sidebar-link-icon" /> My Courses
+              </NavLink>
+              <NavLink to="/sms/instructor/earnings" className="sms-sidebar-link" onClick={closeSidebar}>
+                <FaWallet className="sms-sidebar-link-icon" /> Earnings
+              </NavLink>
+            </>
+          )}
+
+          {/* Affiliate & Wallet */}
+          {(user?.role === "student" || user?.role === "instructor") && (
+            <>
+              <div className="sms-sidebar-divider" style={{ height: '1px', background: 'rgba(255,255,255,0.1)', margin: '1rem' }}></div>
+              <NavLink to="/sms/affiliate" className="sms-sidebar-link" onClick={closeSidebar}>
+                <FaHandshake className="sms-sidebar-link-icon" /> Affiliate
+              </NavLink>
+              <NavLink to="/sms/wallet" className="sms-sidebar-link" onClick={closeSidebar}>
+                <FaWallet className="sms-sidebar-link-icon" /> Wallet
+              </NavLink>
+            </>
+          )}
+
+          <div style={{ marginTop: 'auto', padding: '1rem' }}>
+            <button className="sms-sidebar-logout-btn" onClick={logout}>
+              <FaSignOutAlt className="sms-sidebar-link-icon" /> Logout
+            </button>
+          </div>
+        </nav>
+      </aside>
+    </>
   );
 };
 

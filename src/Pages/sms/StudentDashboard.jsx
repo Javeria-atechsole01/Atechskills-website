@@ -43,82 +43,77 @@ const StudentDashboard = () => {
 
   // Render full dashboard for enrolled students
   return (
-    <div className="sms-dashboard-bg">
+    <div className="sms-dashboard-layout">
       <Sidebar />
-      <main className="sms-dashboard-main">
-        <Topbar breadcrumb="Dashboard" batch={dashboard?.batchNo || user?.batch} />
+      <main className="sms-main-content">
+        <Topbar title="Dashboard" batch={dashboard?.batchNo || user?.batch} />
         
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <h2 style={{ color: '#6B21A8', fontWeight: 700 }}>Welcome Back, {user.name.split(' ')[0]}!</h2>
+          <h2 style={{ color: 'var(--sms-text)', fontWeight: 700 }}>Welcome Back, {user.name.split(' ')[0]}!</h2>
           <button 
             onClick={() => navigate("/sms/select-courses")}
-            style={{ background: 'linear-gradient(90deg, #6B21A8, #7C3AED)', color: '#fff', border: 'none', padding: '0.7rem 1.5rem', borderRadius: '0.8rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignIcons: 'center', gap: '0.5rem' }}
+            className="sms-btn-primary"
+            style={{ padding: '0.7rem 1.5rem', borderRadius: '0.8rem' }}
           >
             + Add New Course
           </button>
         </div>
 
-        <div className="sms-dashboard-cards">
-          <div className="sms-dashboard-stat-card">
-            <div className="sms-dashboard-stat-title">Courses Enrolled</div>
-            <div className="sms-dashboard-stat-value">{dashboard?.coursesCount || 0}</div>
-            <div className="sms-dashboard-stat-badge sms-dashboard-badge-muted">
-              {dashboard?.courseName ? (dashboard.coursesCount > 1 ? `${dashboard.courseName} & more` : dashboard.courseName) : "-"}
-            </div>
-          </div>
-          <div className="sms-dashboard-stat-card">
-            <div className="sms-dashboard-stat-title">Fee Status</div>
-            <div className="sms-dashboard-stat-value">
-              {dashboard?.feeStatus === "approved" ? (
-                <span className="sms-dashboard-stat-badge sms-dashboard-badge-green">Paid & Approved</span>
-              ) : (
-                <span className="sms-dashboard-stat-badge sms-dashboard-badge-amber">Pending</span>
-              )}
-            </div>
-          </div>
-          <div className="sms-dashboard-stat-card">
-            <div className="sms-dashboard-stat-title">Pending Assignments</div>
-            <div className="sms-dashboard-stat-value">{dashboard?.pendingAssignments?.count || 0}</div>
-            <div className="sms-dashboard-stat-badge sms-dashboard-badge-amber">
-              {dashboard?.pendingAssignments?.nextDue ? `Due: ${dashboard.pendingAssignments.nextDue}` : "No Pending"}
-            </div>
-          </div>
-          <div className="sms-dashboard-stat-card">
-            <div className="sms-dashboard-stat-title">Results</div>
-            <div className="sms-dashboard-stat-value">
-              {dashboard?.resultsAvailable ? (
-                <span className="sms-dashboard-stat-badge sms-dashboard-badge-green">Available</span>
-              ) : (
-                <span className="sms-dashboard-stat-badge sms-dashboard-badge-muted">Not Yet</span>
-              )}
-            </div>
-          </div>
+        <div className="sms-stats-grid">
+           <div className="sms-stat-card">
+              <div className="sms-stat-icon"><FaBookOpen /></div>
+              <div className="sms-stat-data">
+                <h4>Courses Enrolled</h4>
+                <p>{dashboard?.coursesCount || 0}</p>
+                <span className="sms-stat-sub">
+                  {dashboard?.courseName ? (dashboard.coursesCount > 1 ? `${dashboard.courseName} & more` : dashboard.courseName) : "-"}
+                </span>
+              </div>
+           </div>
+
+           <div className="sms-stat-card">
+              <div className="sms-stat-icon" style={{ color: dashboard?.feeStatus === "approved" ? 'var(--sms-green)' : 'var(--sms-yellow)' }}>
+                {dashboard?.feeStatus === "approved" ? <FaCheckCircle /> : <FaClock />}
+              </div>
+              <div className="sms-stat-data">
+                <h4>Fee Status</h4>
+                <p>{dashboard?.feeStatus === "approved" ? "Approved" : "Pending"}</p>
+                <span className="sms-stat-sub">Batch: {dashboard?.batchNo || user?.batch || "-"}</span>
+              </div>
+           </div>
+
+           <div className="sms-stat-card">
+              <div className="sms-stat-icon" style={{ color: 'var(--sms-yellow)' }}><FaClipboardList /></div>
+              <div className="sms-stat-data">
+                <h4>Pending Tasks</h4>
+                <p>{dashboard?.pendingAssignments?.count || 0}</p>
+                <span className="sms-stat-sub">
+                  {dashboard?.pendingAssignments?.nextDue ? `Due: ${dashboard.pendingAssignments.nextDue}` : "No Pending"}
+                </span>
+              </div>
+           </div>
+
+           <div className="sms-stat-card">
+              <div className="sms-stat-icon" style={{ color: 'var(--sms-primary-accent)' }}><FaChartBar /></div>
+              <div className="sms-stat-data">
+                <h4>Results</h4>
+                <p>{dashboard?.resultsAvailable ? "Available" : "No Yet"}</p>
+                <span className="sms-stat-sub">Instructor: {dashboard?.instructorName || "-"}</span>
+              </div>
+           </div>
         </div>
-        <div className="sms-dashboard-info-row">
-          <div>
-            <div className="sms-dashboard-info-label">Batch</div>
-            <div className="sms-dashboard-info-value">{dashboard?.batchNo || user?.batch || "-"}</div>
-          </div>
-          <div>
-            <div className="sms-dashboard-info-label">Start Date</div>
-            <div className="sms-dashboard-info-value">{dashboard?.startDate ? new Date(dashboard.startDate).toLocaleDateString() : "-"}</div>
-          </div>
-          <div>
-            <div className="sms-dashboard-info-label">Instructor</div>
-            <div className="sms-dashboard-info-value">{dashboard?.instructorName || "-"}</div>
-          </div>
-        </div>
-        <div className="sms-dashboard-activity-feed">
-          <div className="sms-dashboard-activity-title">Recent Activity</div>
-          <ul className="sms-dashboard-activity-list">
+
+        <div className="sms-glass-card" style={{ marginTop: '2rem' }}>
+          <h3>Recent Activity</h3>
+          <ul className="sms-dashboard-activity-list" style={{ listStyle: 'none', padding: 0, marginTop: '1.5rem' }}>
             {(dashboard?.activityFeed || []).map((item, idx) => (
-              <li className="sms-dashboard-activity-item" key={idx}>
-                <span className="sms-dashboard-activity-icon">{getActivityIcon(item.type)}</span>
-                {item.text}
+              <li key={idx} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem 0', borderBottom: '1px solid var(--sms-card-border)' }}>
+                <span style={{ color: 'var(--sms-primary-accent)' }}>{getActivityIcon(item.type)}</span>
+                <span style={{ color: 'var(--sms-text)' }}>{item.text}</span>
               </li>
             ))}
             {(!dashboard?.activityFeed || dashboard.activityFeed.length === 0) && (
-              <li className="sms-dashboard-activity-item">No recent activity.</li>
+              <li style={{ color: 'var(--sms-muted)', padding: '1rem 0' }}>No recent activity to show.</li>
             )}
           </ul>
         </div>

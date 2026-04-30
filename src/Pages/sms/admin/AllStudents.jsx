@@ -2,15 +2,23 @@ import React, { useContext, useEffect, useState } from "react";
 import AdminSidebar from "../../../components/sms/AdminSidebar";
 import Topbar from "../../../components/sms/Topbar";
 import { AuthContext } from "../../../context/AuthContext";
+import { DataTable, Badge, LoadingState, GlassCard } from "../../../components/sms/UI/DashboardUI";
+import { FaSearch, FaFileDownload, FaUserEdit, FaTrash } from "react-icons/fa";
 import "../../../styles/sms-dashboard.css";
 
 const AllStudents = () => {
   const { token } = useContext(AuthContext);
   const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+
   useEffect(() => {
-    fetch("/api/sms/admin/enrolled-students", { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => res.json()).then(setStudents);
+    fetch("/api/sms/admin/enrolled-students", { 
+      headers: { Authorization: `Bearer ${token}` } 
+    })
+      .then(res => res.json())
+      .then(data => setStudents(Array.isArray(data) ? data : []))
+      .finally(() => setLoading(false));
   }, [token]);
 
   const filtered = students.filter(s =>
@@ -18,49 +26,60 @@ const AllStudents = () => {
     (s.studentId || '').toLowerCase().includes(search.toLowerCase())
   );
 
+  if (loading) return <LoadingState />;
+
   return (
-    <div className="sms-dashboard-bg">
+    <div className="sms-dashboard-layout">
       <AdminSidebar />
-      <main className="sms-dashboard-main">
-        <Topbar breadcrumb="All Students" />
-        <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center' }}>
-          <input placeholder="Search by name or ID" value={search} onChange={e => setSearch(e.target.value)} className="sms-input-purple" style={{ marginRight: 'auto' }} />
-          <button style={{ background: 'linear-gradient(90deg,#6B21A8,#7C3AED)', color: '#fff', border: 'none', borderRadius: '0.7rem', padding: '0.5rem 1.2rem', fontWeight: 600, cursor: 'pointer' }}>Export CSV</button>
+      <main className="sms-main-content">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+          <h2 className="sms-page-title">Student Directory</h2>
+          <button className="sms-btn-secondary">
+            <FaFileDownload /> Export Data
+          </button>
         </div>
-        <table className="sms-table-purple">
-          <thead>
-            <tr>
-              <th style={{ padding: '0.7rem' }}>Student ID</th>
-              <th>Name</th>
-              <th>Course</th>
-              <th>Track</th>
-              <th>Batch</th>
-              <th>Enrollment Date</th>
-              <th>Fee Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((s, i) => (
+
+        <div className="sms-search-wrapper" style={{ position: 'relative', marginBottom: '1.5rem', maxWidth: '500px' }}>
+          <FaSearch style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--sms-muted)' }} />
+          <input 
+            placeholder="Search by name, ID or email..." 
+            value={search} 
+            onChange={e => setSearch(e.target.value)} 
+            className="sms-form-input"
+            style={{ width: '100%', paddingLeft: '3rem', background: 'var(--sms-card)', border: '1px solid var(--sms-card-border)', borderRadius: '0.75rem', height: '45px', color: 'white' }}
+          />
+        </div>
+
+        <GlassCard>
+          <DataTable 
+            headers={["Student", "Course Info", "Batch", "Enrollment Date", "Fee Status", "Actions"]}
+            rows={filtered}
+            renderRow={(s, i) => (
               <tr key={i}>
-                <td style={{ padding: '0.7rem' }}>{s.studentId}</td>
-                <td>{s.name}</td>
-                <td>{s.selectedCourse?.name}</td>
-                <td>{s.selectedCourse?.track}</td>
+                <td>
+                  <div style={{ fontWeight: 600 }}>{s.name}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--sms-muted)' }}>{s.studentId}</div>
+                </td>
+                <td>
+                  <div style={{ fontWeight: 500 }}>{s.selectedCourse?.name}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--sms-primary-accent)' }}>{s.selectedCourse?.track}</div>
+                </td>
                 <td>{s.batch}</td>
                 <td>{new Date(s.enrollmentDate).toLocaleDateString()}</td>
-                <td>{s.feeStatus || '-'}</td>
+                <td><Badge status={s.feeStatus || 'pending'} /></td>
                 <td>
-                  <button style={{ background: '#FFFFFF', color: '#6B21A8', border: 'none', borderRadius: '0.7rem', padding: '0.5rem 1.2rem', fontWeight: 600, cursor: 'pointer', marginRight: 8 }}>View Profile</button>
-                  <button style={{ background: '#7C3AED', color: '#fff', border: 'none', borderRadius: '0.7rem', padding: '0.5rem 1.2rem', fontWeight: 600, cursor: 'pointer', marginRight: 8 }}>View Challan</button>
-                  <button style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: '0.7rem', padding: '0.5rem 1.2rem', fontWeight: 600, cursor: 'pointer' }}>Deactivate</button>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button className="sms-icon-btn"><FaUserEdit /></button>
+                    <button className="sms-icon-btn danger"><FaTrash /></button>
+                  </div>
                 </td>
               </tr>
-            ))}
-            {filtered.length === 0 && <tr><td colSpan={8} style={{ color: 'rgba(255,255,255,0.7)', textAlign: 'center' }}>No students found.</td></tr>}
-          </tbody>
-        </table>
-        <div style={{ color: '#94A3B8', marginTop: '1.2rem' }}>Showing {filtered.length} enrolled students</div>
+            )}
+          />
+          <div style={{ color: 'var(--sms-muted)', marginTop: '1.5rem', fontSize: '0.9rem' }}>
+            Total Enrolled: {filtered.length}
+          </div>
+        </GlassCard>
       </main>
     </div>
   );

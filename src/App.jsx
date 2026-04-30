@@ -33,6 +33,9 @@ import PendingApprovals from "./Pages/sms/admin/PendingApprovals";
 import AllStudents from "./Pages/sms/admin/AllStudents";
 import FeeManagement from "./Pages/sms/admin/FeeManagement";
 import CoursesAndBatches from "./Pages/sms/admin/CoursesAndBatches";
+import InstructorDashboard from "./Pages/sms/InstructorDashboard";
+import InstructorCourses from "./Pages/sms/InstructorCourses";
+import InstructorEarnings from "./Pages/sms/InstructorEarnings";
 import ProtectedRoute from "./components/sms/ProtectedRoute";
 
 import { AuthProvider } from "./context/AuthContext";
@@ -76,9 +79,14 @@ function App() {
           <Route path="/sms/student-dashboard" element={<ProtectedRoute role="student"><StudentDashboard /></ProtectedRoute>} />
           <Route path="/sms/enrollment-status" element={<ProtectedRoute role="student"><EnrollmentStatus /></ProtectedRoute>} />
           
-          {/* Affiliate/Wallet Routes */}
           <Route path="/sms/affiliate" element={<ProtectedRoute><AffiliateDashboard /></ProtectedRoute>} />
           <Route path="/sms/wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
+
+          {/* Instructor Routes */}
+          <Route path="/sms/instructor/dashboard" element={<ProtectedRoute role="instructor"><InstructorDashboard /></ProtectedRoute>} />
+          <Route path="/sms/instructor-dashboard" element={<ProtectedRoute role="instructor"><InstructorDashboard /></ProtectedRoute>} />
+          <Route path="/sms/instructor/courses" element={<ProtectedRoute role="instructor"><InstructorCourses /></ProtectedRoute>} />
+          <Route path="/sms/instructor/earnings" element={<ProtectedRoute role="instructor"><InstructorEarnings /></ProtectedRoute>} />
 
           {/* Admin Routes */}
           <Route path="/sms/admin-dashboard" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />

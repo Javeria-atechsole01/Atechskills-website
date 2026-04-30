@@ -19,6 +19,8 @@ import Student from './models/sms/Student.js';
 
 dotenv.config();
 
+import instructorRouter from './routes/sms/instructor.js';
+
 const app = express();
 const PORT = process.env.PORT || 4000;
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -124,6 +126,7 @@ app.use('/api/sms/admin', smsAdminRouter);
 app.use('/api/sms/enrollment', smsEnrollmentRouter);
 app.use('/api/sms/dashboard', smsDashboardRouter);
 app.use('/api/sms/affiliate', affiliateRouter);
+app.use('/api/sms/instructor', instructorRouter);
 app.use('/api/sms/assignments', smsAssignmentsRouter);
 app.use('/api/sms/results', smsResultsRouter);
 

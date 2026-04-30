@@ -2,68 +2,98 @@ import React, { useContext, useEffect, useState } from "react";
 import AdminSidebar from "../../../components/sms/AdminSidebar";
 import Topbar from "../../../components/sms/Topbar";
 import { AuthContext } from "../../../context/AuthContext";
+import { DataTable, Badge, LoadingState, GlassCard } from "../../../components/sms/UI/DashboardUI";
+import { FaSearch, FaEye, FaCheck, FaTimes } from "react-icons/fa";
 import "../../../styles/sms-dashboard.css";
 
 const PendingApprovals = () => {
   const { token } = useContext(AuthContext);
   const [pending, setPending] = useState([]);
-  const [filter, setFilter] = useState("All Pending");
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
+
   useEffect(() => {
-    fetch("/api/sms/admin/pending-approvals", { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => res.json()).then(setPending);
+    fetch("/api/sms/admin/pending-approvals", { 
+      headers: { Authorization: `Bearer ${token}` } 
+    })
+      .then(res => res.json())
+      .then(data => setPending(Array.isArray(data) ? data : []))
+      .finally(() => setLoading(false));
   }, [token]);
 
   const filtered = pending.filter(item => {
-    if (filter === "Approved Today" && item.status !== 'approved') return false;
-    if (filter === "Rejected" && item.status !== 'rejected') return false;
-    if (search && !((item.studentId?.name || '').toLowerCase().includes(search.toLowerCase()) || (item.studentId?.studentId || '').toLowerCase().includes(search.toLowerCase()))) return false;
-    return true;
+    const matchesFilter = filter === "all" ? true : item.status === filter;
+    const matchesSearch = (item.studentId?.name || '').toLowerCase().includes(search.toLowerCase()) || 
+                         (item.studentId?.studentId || '').toLowerCase().includes(search.toLowerCase());
+    return matchesFilter && matchesSearch;
   });
 
+  const handleAction = async (id, status) => {
+    // Add API logic here
+    console.log(`Action: ${status} for ID: ${id}`);
+  };
+
+  if (loading) return <LoadingState />;
+
   return (
-    <div className="sms-dashboard-bg">
+    <div className="sms-dashboard-layout">
       <AdminSidebar />
-      <main className="sms-dashboard-main">
-        <Topbar breadcrumb="Pending Approvals" />
-        <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem' }}>
-          {["All Pending", "Approved Today", "Rejected"].map(f => (
-            <button key={f} onClick={() => setFilter(f)} style={{ background: filter === f ? 'linear-gradient(90deg,#6B21A8,#7C3AED)' : '#6B21A8', color: '#FFFFFF', border: 'none', borderRadius: '0.7rem', padding: '0.5rem 1.2rem', fontWeight: 600, cursor: 'pointer' }}>{f}</button>
-          ))}
-          <input placeholder="Search by name or ID" value={search} onChange={e => setSearch(e.target.value)} className="sms-input-purple" style={{ marginLeft: 'auto' }} />
+      <main className="sms-main-content">
+        <Topbar title="Enrollment Approvals" />
+        
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', gap: '1rem', flexWrap: 'wrap' }}>
+          <div className="sms-filter-tabs">
+            {['all', 'pending', 'approved', 'rejected'].map(f => (
+              <button key={f} onClick={() => setFilter(f)} className={filter === f ? 'active' : ''}>
+                {f.toUpperCase()}
+              </button>
+            ))}
+          </div>
+          
+          <div className="sms-search-wrapper" style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
+            <FaSearch style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--sms-muted)' }} />
+            <input 
+              placeholder="Search student or ID..." 
+              value={search} 
+              onChange={e => setSearch(e.target.value)} 
+              className="sms-form-input"
+              style={{ width: '100%', paddingLeft: '3rem', background: 'var(--sms-card)', border: '1px solid var(--sms-card-border)', borderRadius: '0.75rem', height: '45px', color: 'white' }}
+            />
+          </div>
         </div>
-        <table className="sms-table-purple">
-          <thead>
-            <tr>
-              <th style={{ padding: '0.7rem' }}>Student Name</th>
-              <th>Student ID</th>
-              <th>Course</th>
-              <th>Fee Amount</th>
-              <th>Submitted On</th>
-              <th>Payment Proof</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((item, i) => (
+
+        <GlassCard>
+          <DataTable 
+            headers={["Student", "Course", "Amount", "Date", "Status", "Proof", "Actions"]}
+            rows={filtered}
+            renderRow={(item, i) => (
               <tr key={i}>
-                <td style={{ padding: '0.7rem' }}>{item.studentId?.name}</td>
-                <td>{item.studentId?.studentId}</td>
-                <td>{item.courseId?.name}</td>
-                <td>PKR {item.amount}</td>
-                <td>{new Date(item.submissionDate).toLocaleDateString()}</td>
                 <td>
-                  {item.paymentProofUrl ? <a href={item.paymentProofUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#FFFFFF', textDecoration: 'underline' }}>View Proof</a> : 'N/A'}
+                  <div style={{ fontWeight: 600 }}>{item.studentId?.name}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--sms-muted)' }}>{item.studentId?.studentId}</div>
+                </td>
+                <td>{item.courseId?.name}</td>
+                <td style={{ fontWeight: 700 }}>Rs. {item.amount?.toLocaleString()}</td>
+                <td>{new Date(item.submissionDate).toLocaleDateString()}</td>
+                <td><Badge status={item.status} /></td>
+                <td>
+                  {item.paymentProofUrl ? (
+                    <a href={item.paymentProofUrl} target="_blank" rel="noopener noreferrer" className="sms-icon-btn">
+                      <FaEye />
+                    </a>
+                  ) : 'N/A'}
                 </td>
                 <td>
-                  <button style={{ background: '#10B981', color: '#fff', border: 'none', borderRadius: '0.7rem', padding: '0.5rem 1.2rem', fontWeight: 600, cursor: 'pointer', marginRight: 8 }}>Approve</button>
-                  <button style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: '0.7rem', padding: '0.5rem 1.2rem', fontWeight: 600, cursor: 'pointer' }}>Reject</button>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button className="sms-icon-btn success" onClick={() => handleAction(item._id, 'approved')}><FaCheck /></button>
+                    <button className="sms-icon-btn danger" onClick={() => handleAction(item._id, 'rejected')}><FaTimes /></button>
+                  </div>
                 </td>
               </tr>
-            ))}
-            {filtered.length === 0 && <tr><td colSpan={7} style={{ color: 'rgba(255,255,255,0.7)', textAlign: 'center' }}>No records found.</td></tr>}
-          </tbody>
-        </table>
+            )}
+          />
+        </GlassCard>
       </main>
     </div>
   );

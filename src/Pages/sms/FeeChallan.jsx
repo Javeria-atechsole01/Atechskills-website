@@ -20,10 +20,10 @@ const FeeChallan = () => {
   }, [token]);
 
   return (
-    <div className="sms-dashboard-bg">
+    <div className="sms-dashboard-layout">
       <Sidebar />
-      <main className="sms-dashboard-main">
-        <Topbar breadcrumb="Fee Management" />
+      <main className="sms-main-content">
+        <Topbar title="Fee Management" />
 
         <div className="sms-fee-page">
           <div className="sms-fee-header">
@@ -74,22 +74,28 @@ const FeeChallan = () => {
       </main>
 
       <style dangerouslySetInnerHTML={{ __html: `
-        .sms-fee-page { padding: 1rem; }
-        .sms-fee-title { color: #6B21A8; font-size: 1.8rem; font-weight: 700; margin-bottom: 2rem; }
-        .sms-challan-card { background: #fff; border-radius: 1.2rem; border: 1px solid #E2E8F0; overflow: hidden; margin-bottom: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .sms-challan-main { display: flex; padding: 2rem; border-bottom: 1px solid #F1F5F9; gap: 3rem; }
-        .sms-challan-label { font-size: 0.85rem; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
-        .sms-challan-number { font-size: 1.3rem; font-weight: 700; color: #1E293B; }
-        .sms-challan-date { font-size: 0.85rem; color: #94A3B8; margin-top: 0.3rem; }
-        .sms-challan-value { font-size: 1.5rem; font-weight: 800; color: #6B21A8; }
+        .sms-fee-page { padding: 0; }
+        .sms-fee-title { color: var(--sms-text); font-size: 1.8rem; font-weight: 700; margin-bottom: 2rem; }
+        .sms-challan-card { background: var(--sms-card); backdrop-filter: var(--sms-blur); border-radius: 1.25rem; border: 1px solid var(--sms-card-border); overflow: hidden; margin-bottom: 1.5rem; color: var(--sms-text); }
+        .sms-challan-main { display: flex; padding: 2rem; border-bottom: 1px solid var(--sms-card-border); gap: 3rem; }
+        .sms-challan-label { font-size: 0.85rem; color: var(--sms-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .sms-challan-number { font-size: 1.3rem; font-weight: 700; color: var(--sms-text); }
+        .sms-challan-date { font-size: 0.85rem; color: var(--sms-muted); margin-top: 0.3rem; }
+        .sms-challan-value { font-size: 1.5rem; font-weight: 800; color: var(--sms-primary-accent); }
         
         .sms-status-pill { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 2rem; font-weight: 700; font-size: 0.85rem; }
-        .sms-status-pill.pending { background: #FEF3C7; color: #D97706; }
-        .sms-status-pill.approved { background: #DCFCE7; color: #15803D; }
+        .sms-status-pill.pending { background: rgba(251, 191, 36, 0.1); color: var(--sms-yellow); }
+        .sms-status-pill.approved { background: rgba(16, 185, 129, 0.1); color: var(--sms-green); }
         
-        .sms-challan-footer { padding: 1.2rem 2rem; background: #F8FAFC; display: flex; justify-content: space-between; align-items: center; }
-        .sms-btn-download { background: #6B21A8; color: #fff; border: none; padding: 0.7rem 1.5rem; border-radius: 0.7rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
-        .sms-fee-note { font-size: 0.85rem; color: #64748B; font-style: italic; }
+        .sms-challan-footer { padding: 1.2rem 2rem; background: rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: center; }
+        .sms-btn-download { background: var(--sms-primary); color: #fff; border: none; padding: 0.7rem 1.5rem; border-radius: 0.7rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
+        .sms-fee-note { font-size: 0.85rem; color: var(--sms-muted); font-style: italic; }
+        
+        .sms-purple-card { background: var(--sms-card); border: 1px solid var(--sms-card-border); border-radius: 1.25rem; color: var(--sms-text); }
+        
+        @media (max-width: 768px) {
+          .sms-challan-main { flex-direction: column; gap: 1.5rem; padding: 1.5rem; }
+        }
       ` }} />
     </div>
   );
